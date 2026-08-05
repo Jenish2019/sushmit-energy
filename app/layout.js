@@ -1,10 +1,16 @@
-import { Poppins } from "next/font/google";
+import { Lexend, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 
-const poppins = Poppins({
+const lexend = Lexend({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  variable: "--font-poppins",
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-display",
+});
+
+const sourceSans = Source_Sans_3({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-body",
 });
 
 export const metadata = {
@@ -15,7 +21,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
+    <html lang="en" className={`${lexend.variable} ${sourceSans.variable}`}>
       <body>{children}</body>
     </html>
   );

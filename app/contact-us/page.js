@@ -1,30 +1,59 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { MapPin, Phone, Mail, Send } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { MapPin, Phone, Envelope, PaperPlaneTilt } from '@phosphor-icons/react/dist/ssr';
+
+const DEFAULT_CONTACT = {
+  address: 'Sushmit Bhawan -2nd Floor, House No 166/40467\nSubidhanagar - 35, Kathmandu, Nepal',
+  phone: '+977-15199027\n+977-5199454 (Fax)',
+  email: 'info@sushmitenergy.com',
+};
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [contact, setContact] = useState(DEFAULT_CONTACT);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    fetch('/api/public/settings', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.contact) setContact({ ...DEFAULT_CONTACT, ...json.contact });
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+        cache: 'no-store',
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || 'Failed to send message');
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Contact Us</h1>
-            <p>Get in touch with Sushmit Energy</p>
-          </div>
-        </section>
+        <PageHero title="Contact Us" subtitle="Get in touch with Sushmit Energy" />
 
         <section className="contact-section section-padding">
           <div className="container">
@@ -35,34 +64,26 @@ export default function ContactPage() {
                     <MapPin size={24} />
                   </div>
                   <h4>Our Address</h4>
-                  <p>
-                    Sushmit Bhawan -2nd Floor, House No 166/40467
-                    <br />
-                    Subidhanagar - 35, Kathmandu, Nepal
-                  </p>
+                  <p>{contact.address.split('\n').map((line, i) => (<span key={i}>{line}<br /></span>))}</p>
                 </div>
                 <div className="contact-card">
                   <div className="contact-card-icon">
                     <Phone size={24} />
                   </div>
                   <h4>Phone &amp; Fax</h4>
-                  <p>
-                    +977-15199027
-                    <br />
-                    +977-5199454 (Fax)
-                  </p>
+                  <p>{contact.phone.split('\n').map((line, i) => (<span key={i}>{line}<br /></span>))}</p>
                 </div>
                 <div className="contact-card">
                   <div className="contact-card-icon">
-                    <Mail size={24} />
+                    <Envelope size={24} />
                   </div>
                   <h4>Email</h4>
-                  <p>info@sushmitenergy.com</p>
+                  <p>{contact.email}</p>
                 </div>
               </div>
 
               <div className="contact-form-wrapper">
-                <h2>Send Us a Message</h2>
+                <h2>PaperPlaneTilt Us a Message</h2>
                 {submitted ? (
                   <div className="success-message">
                     <h3>Thank You!</h3>
@@ -110,9 +131,10 @@ export default function ContactPage() {
                         required
                       />
                     </div>
-                    <button type="submit" className="btn btn-primary">
-                      Send Message <Send size={18} />
+                    <button type="submit" className="btn btn-primary" disabled={submitting}>
+                      {submitting ? 'Sending...' : 'PaperPlaneTilt Message'} <PaperPlaneTilt size={18} />
                     </button>
+                    {error && <div className="form-error">{error}</div>}
                   </form>
                 )}
               </div>
@@ -123,32 +145,6 @@ export default function ContactPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container {
-          position: relative;
-          z-index: 1;
-        }
-        .page-banner h1 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          margin-bottom: 12px;
-        }
-        .page-banner p {
-          font-size: 1.1rem;
-          opacity: 0.85;
-        }
         .contact-layout {
           display: grid;
           grid-template-columns: 1fr 2fr;
@@ -240,12 +236,16 @@ export default function ContactPage() {
         .success-message p {
           color: var(--text-muted);
         }
+        .form-error {
+          padding: 12px 16px;
+          background: #fee2e2;
+          color: #dc2626;
+          border-radius: var(--radius-sm);
+          font-size: 0.9rem;
+        }
         @media (max-width: 768px) {
           .contact-layout {
             grid-template-columns: 1fr;
-          }
-          .page-banner h1 {
-            font-size: 1.8rem;
           }
           .contact-form-wrapper {
             padding: 24px;

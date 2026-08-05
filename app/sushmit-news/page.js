@@ -1,52 +1,18 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { Calendar, ArrowUpRight } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { CalendarBlank, ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
+import { getNews } from '../../lib/data';
 
-const newsItems = [
-  {
-    title: 'Sushmit Energy Completes 57.3 MW Myagdi Khola Project Feasibility Studies',
-    date: 'February 20, 2026',
-    summary: 'Detailed feasibility studies for the flagship 57.3 MW Myagdi Khola Hydropower Project have been successfully completed, confirming the project\'s technical and financial viability.',
-    source: 'The Himalayan Times',
-  },
-  {
-    title: 'Sushmit Energy to Invest NPR 2 Billion in Renewable Energy Expansion',
-    date: 'December 12, 2025',
-    summary: 'Sushmit Energy has announced plans to invest NPR 2 billion over the next three years to expand its renewable energy portfolio, including new hydro and solar projects across Nepal.',
-    source: 'Kathmandu Post',
-  },
-  {
-    title: 'Sushmit Energy Creates 500+ Jobs Through Hydropower Development',
-    date: 'October 8, 2025',
-    summary: 'Through its ongoing hydropower projects in Myagdi and other districts, Sushmit Energy has created over 500 direct and indirect employment opportunities for local communities.',
-    source: 'Nepal Energy News',
-  },
-  {
-    title: 'Nepal\'s Hydropower Sector Attracts Foreign Investment Through Companies Like Sushmit Energy',
-    date: 'August 15, 2025',
-    summary: 'Nepal\'s hydropower sector is seeing increased foreign direct investment, with companies like Sushmit Energy leading the way in sustainable project development and international partnerships.',
-    source: 'The Rising Nepal',
-  },
-  {
-    title: 'Sushmit Energy Contributes to National Grid Stability with Consistent Power Supply',
-    date: 'June 3, 2025',
-    summary: 'Sushmit Energy\'s operational projects have been consistently contributing to Nepal\'s national grid, helping to reduce load-shedding hours during the dry season.',
-    source: 'Republica',
-  },
-];
+export const dynamic = 'force-dynamic';
 
-export default function SushmitNewsPage() {
+export default async function SushmitNewsPage() {
+  const newsItems = await getNews('News');
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Sushmit Energy in the News</h1>
-            <p>Media coverage and news articles featuring Sushmit Energy</p>
-          </div>
-        </section>
+        <PageHero title="Sushmit Energy in the News" subtitle="Media coverage and news articles featuring Sushmit Energy" />
 
         <section className="section-padding">
           <div className="container">
@@ -56,7 +22,7 @@ export default function SushmitNewsPage() {
                   <div className="news-content">
                     <div className="news-meta">
                       <span className="news-date">
-                        <Calendar size={14} />
+                        <CalendarBlank size={14} />
                         {item.date}
                       </span>
                       <span className="news-source">{item.source}</span>
@@ -76,32 +42,6 @@ export default function SushmitNewsPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container {
-          position: relative;
-          z-index: 1;
-        }
-        .page-banner h1 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          margin-bottom: 12px;
-        }
-        .page-banner p {
-          font-size: 1.1rem;
-          opacity: 0.85;
-        }
         .news-list {
           max-width: 900px;
           margin: 0 auto;
@@ -170,9 +110,6 @@ export default function SushmitNewsPage() {
           gap: 10px;
         }
         @media (max-width: 768px) {
-          .page-banner h1 {
-            font-size: 1.8rem;
-          }
           .news-content {
             padding: 24px;
           }

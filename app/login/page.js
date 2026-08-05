@@ -1,96 +1,58 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { LogIn, Eye, EyeOff } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { SignIn, Eye, EyeSlash, CircleNotch } from '@phosphor-icons/react/dist/ssr';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoggedIn(true);
-  };
+    setLoading(true);
+    setError('');
 
-  if (loggedIn) {
-    return (
-      <>
-        <Header />
-        <main>
-          <section className="page-banner">
-            <div className="page-banner-overlay" />
-            <div className="container">
-              <h1>Login</h1>
-              <p>Investor portal</p>
-            </div>
-          </section>
-          <section className="section-padding">
-            <div className="container">
-              <div className="dashboard-message">
-                <h2>Welcome, Investor</h2>
-                <p>Your dashboard is under development. Check back soon for investment reports and portfolio tracking.</p>
-              </div>
-            </div>
-          </section>
-        </main>
-        <Footer />
-        <style>{`
-          .page-banner {
-            position: relative;
-            padding: 100px 0;
-            background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-            text-align: center;
-            color: white;
-          }
-          .page-banner-overlay {
-            position: absolute;
-            inset: 0;
-            background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-            opacity: 0.1;
-          }
-          .page-banner .container { position: relative; z-index: 1; }
-          .page-banner h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
-          .page-banner p { font-size: 1.1rem; opacity: 0.85; }
-          .dashboard-message {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 60px 40px;
-            background: var(--bg-light);
-            border-radius: var(--radius-lg);
-          }
-          .dashboard-message h2 { font-size: 1.8rem; margin-bottom: 16px; }
-          .dashboard-message p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; }
-          @media (max-width: 768px) { .page-banner h1 { font-size: 1.8rem; } }
-        `}</style>
-      </>
-    );
-  }
+    try {
+      const res = await fetch('/api/admin/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Invalid email or password');
+        setLoading(false);
+        return;
+      }
+      router.replace('/admin/dashboard');
+    } catch {
+      setError('Something went wrong. Please try again.');
+      setLoading(false);
+    }
+  };
 
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Login</h1>
-            <p>Investor portal sign in</p>
-          </div>
-        </section>
+        <PageHero title="Admin Login" subtitle="Sign in to the Sushmit Energy admin panel" />
 
         <section className="section-padding">
           <div className="container">
             <div className="login-wrapper">
               <div className="login-card">
                 <div className="login-header">
-                  <LogIn size={32} />
+                  <SignIn size={32} />
                   <h2>Sign In</h2>
-                  <p>Access your investor dashboard</p>
+                  <p>Authorized personnel only</p>
                 </div>
                 <form onSubmit={handleSubmit} className="login-form">
                   <div className="form-group">
@@ -100,8 +62,9 @@ export default function LoginPage() {
                       className="form-input"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
+                      placeholder="admin@gmail.com"
                       required
+                      autoFocus
                     />
                   </div>
                   <div className="form-group">
@@ -120,19 +83,21 @@ export default function LoginPage() {
                         className="password-toggle"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        {showPassword ? <EyeSlash size={18} /> : <Eye size={18} />}
                       </button>
                     </div>
                   </div>
-                  <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-                    Sign In <LogIn size={18} />
+                  {error && <div className="login-error">{error}</div>}
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    style={{ width: '100%', justifyContent: 'center' }}
+                    disabled={loading}
+                  >
+                    {loading ? <CircleNotch size={18} className="spin" /> : <SignIn size={18} />}
+                    {loading ? 'Signing In...' : 'Sign In'}
                   </button>
                 </form>
-                <div className="login-footer">
-                  <a href="#">Forgot Password?</a>
-                  <span>|</span>
-                  <a href="#">Create Account</a>
-                </div>
               </div>
             </div>
           </div>
@@ -141,32 +106,6 @@ export default function LoginPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container {
-          position: relative;
-          z-index: 1;
-        }
-        .page-banner h1 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          margin-bottom: 12px;
-        }
-        .page-banner p {
-          font-size: 1.1rem;
-          opacity: 0.85;
-        }
         .login-wrapper {
           display: flex;
           justify-content: center;
@@ -245,26 +184,25 @@ export default function LoginPage() {
         .password-toggle:hover {
           color: var(--text-dark);
         }
-        .login-footer {
-          display: flex;
-          justify-content: center;
-          gap: 12px;
-          margin-top: 20px;
-          font-size: 0.85rem;
+        .login-error {
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          color: #b91c1c;
+          padding: 10px 14px;
+          border-radius: var(--radius-sm);
+          font-size: 0.9rem;
         }
-        .login-footer a {
-          color: var(--primary-blue);
+        .btn:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
         }
-        .login-footer a:hover {
-          text-decoration: underline;
+        .spin {
+          animation: spin 0.8s linear infinite;
         }
-        .login-footer span {
-          color: var(--text-light);
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
         @media (max-width: 768px) {
-          .page-banner h1 {
-            font-size: 1.8rem;
-          }
           .login-card {
             padding: 28px 24px;
           }

@@ -17,6 +17,13 @@
 /.next/
 /out/
 
+# stray duplicate/leftover build dir
+/frontend/
+
+# local dev logs
+.dev-err.log
+.dev-out.log
+
 # production
 /build
 

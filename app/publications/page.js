@@ -1,64 +1,18 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { FileText, Download, Calendar, ArrowUpRight } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { FileText, Download, CalendarBlank, ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
+import { getMediaResources } from '../../lib/data';
 
-const publications = [
-  {
-    title: 'Annual Report 2024/25',
-    date: 'October 2025',
-    description: 'Comprehensive annual report detailing financial performance, project updates, and corporate governance for the fiscal year 2024/25.',
-    type: 'Annual Report',
-    size: '5.2 MB',
-  },
-  {
-    title: 'Quarterly Progress Report - Q2 2025/26',
-    date: 'January 2026',
-    description: 'Quarterly update on project milestones, power generation statistics, and financial highlights for the second quarter.',
-    type: 'Quarterly Report',
-    size: '1.8 MB',
-  },
-  {
-    title: 'Environmental Impact Assessment: Myagdi Khola Project',
-    date: 'March 2025',
-    description: 'Detailed environmental impact assessment report for the 57.3 MW Myagdi Khola Hydropower Project, including mitigation measures.',
-    type: 'EIA Report',
-    size: '12.4 MB',
-  },
-  {
-    title: 'Social Impact Assessment: Kunaban Khola Project',
-    date: 'January 2025',
-    description: 'Social impact assessment examining the effects of the Kunaban Khola project on local communities and proposed benefit-sharing mechanisms.',
-    type: 'SIA Report',
-    size: '8.6 MB',
-  },
-  {
-    title: 'Corporate Social Responsibility Report 2024',
-    date: 'April 2025',
-    description: 'Overview of CSR initiatives undertaken by Sushmit Energy including education, healthcare, and infrastructure development programs.',
-    type: 'CSR Report',
-    size: '3.1 MB',
-  },
-  {
-    title: 'Technical Feasibility Study: Myagdi Khola-B Extension',
-    date: 'November 2024',
-    description: 'Technical feasibility study examining the extension potential of the Myagdi Khola-B project with updated resource assessment.',
-    type: 'Technical Report',
-    size: '9.7 MB',
-  },
-];
+export const dynamic = 'force-dynamic';
 
-export default function PublicationsPage() {
+export default async function PublicationsPage() {
+  const publications = await getMediaResources('publications');
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Publications</h1>
-            <p>Reports, studies, and official documents from Sushmit Energy</p>
-          </div>
-        </section>
+        <PageHero title="Publications" subtitle="Reports, studies, and official documents from Sushmit Energy" />
 
         <section className="section-padding">
           <div className="container">
@@ -69,18 +23,18 @@ export default function PublicationsPage() {
                     <FileText size={28} />
                   </div>
                   <div className="pub-info">
-                    <div className="pub-type">{pub.type}</div>
+                    <div className="pub-type">{pub.type || 'Report'}</div>
                     <h2 className="pub-title">{pub.title}</h2>
                     <p className="pub-description">{pub.description}</p>
                     <div className="pub-meta">
                       <span className="pub-date">
-                        <Calendar size={14} />
+                        <CalendarBlank size={14} />
                         {pub.date}
                       </span>
-                      <span className="pub-size">{pub.size}</span>
+                      {pub.size ? <span className="pub-size">{pub.size}</span> : null}
                     </div>
                   </div>
-                  <a href="#" className="pub-download">
+                  <a href={pub.fileUrl || '#'} target={pub.fileUrl ? '_blank' : undefined} rel={pub.fileUrl ? 'noreferrer' : undefined} className="pub-download">
                     <Download size={20} />
                   </a>
                 </div>
@@ -92,32 +46,6 @@ export default function PublicationsPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container {
-          position: relative;
-          z-index: 1;
-        }
-        .page-banner h1 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          margin-bottom: 12px;
-        }
-        .page-banner p {
-          font-size: 1.1rem;
-          opacity: 0.85;
-        }
         .publications-list {
           max-width: 860px;
           margin: 0 auto;
@@ -209,9 +137,6 @@ export default function PublicationsPage() {
           transform: scale(1.05);
         }
         @media (max-width: 768px) {
-          .page-banner h1 {
-            font-size: 1.8rem;
-          }
           .publication-card {
             flex-direction: column;
           }

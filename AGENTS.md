@@ -5,14 +5,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 <!-- END:nextjs-agent-rules -->
 
 <!-- BEGIN:sushmit-energy-state -->
-# Sushmit Energy - Current Project State (Updated Jul 17, 2026)
+# Sushmit Energy - Current Project State (Updated Jul 31, 2026)
 
 ## Notion Database
 - Parent page: "Sushmit Energy" (previously "Developer OS")
 - Task tracker: "Sushmit Energy - Task List" under Sushmit Energy page
 - DB ID: `3a0cb3cd-1d7f-817a-8d3f-dffcff45c486`
 
-## Routes (27 total, all Static)
+## Routes (27 public, all Static) + ~26 admin pages
 - `/` - Homepage (Header, Banner, IntroSection, Projects, ChairmanMessage, Footer)
 - `/about-us/` - Company vision/mission/objectives
 - `/board-of-directors/` - 5 board members
@@ -25,7 +25,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `/kunaban-khola-hydropower-project/` - 24.78 MW detail page
 - `/myagdi-khola-b-hydropower-project/` - 12.5 MW detail page
 - `/gallery/` - 3 album cards
-- `/contact-us/` - Contact form (client-side mock)
+- `/contact-us/` - Contact form (posts to /api/contact)
 - `/policy/` - Policy download
 - `/reports/` - Annual & quarterly reports (was placeholder, now populated)
 - `/press-releases/` - 6 press releases
@@ -34,25 +34,30 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `/media-kit/` - 6 downloadable resources
 - `/blog/` - 6 blog posts
 - `/publications/` - 6 reports/publications
-- `/current-vacancies/` - 5 job listings
+- `/current-vacancies/` - 5 job listings (DB-driven via Job model)
 - `/resume/` - Resume upload form (client-side)
-- `/login/` - Login page (client-side mock)
+- `/login/` - Admin login page (real auth, redirects to /admin/dashboard)
 
-## Components (6)
-Header, Footer, Banner, IntroSection, Projects, ChairmanMessage
+## Public site is DB-driven (frontend wired to MongoDB)
+- Public pages are async server components with `export const dynamic = 'force-dynamic'` reading MongoDB via `lib/data.js` (`getProjects`, `getProjectBySlug`, `getBoardMembers`, `getManagementMembers`, `getNews(category)`, `getBlogPosts`, `getAlbums`, `getMediaResources(group)`, `getReports`, `getJobs`, `getPage(slug)`, `getSettings`, `getContact`)
+- DB-first with fallback to real site content in `lib/defaults.js` (used only when a collection is empty)
+- Client components (Header/Footer/Contact) fetch `/api/public/settings` (force-dynamic) for settings + contact
+- Shared `components/ProjectDetail.js` renders the 3 project detail pages
 
-## Design Tokens
-- Colors: --primary-blue (#0c50a0), --primary-green (#0f8a43)
-- Max width: 1200px
-- CSS-in-JS with <style> blocks in each page/component
-- globals.css has utility classes (.container, .section-padding, .btn, .btn-primary, .btn-green, .btn-outline, .grid, .flex)
+## Admin Panel (/admin)
+- Dashboard, Company (About/Org Chart/Board/Chairman/Management/Investment), Projects, Media (Press Releases/Sushmit News/Energy News/Media Kit/Blog/Publications), Gallery, Contact Us, Policy, Reports, Job Board, Settings, Messages (API only)
+- All admin pages wired to MongoDB via /api/admin/* routes (real CRUD, no more local state mocks)
+- Admin auth: POST /api/admin/auth/register (first admin only), /login, /logout, /me. Session = httpOnly JWT cookie `admin_session` (7 days)
+- Access control: `proxy.js` (Next.js 16 middleware) protects all `/admin` pages (redirect -> /login) and `/api/admin/*` routes (401) except auth endpoints; `/login` redirects to /admin if already authed. Admin layout also checks `/me` client-side and wires the logout button.
+- Seed admin: admin@gmail.com / admin123 (change immediately). Reset via `npm run reset-admin [email] [password] [name]`
 
-## Assets
-- Only local image: /public/images/logo.png
-- All other images from web.archive.org URLs
-
-## Backend
-- None. server/ directory is empty.
-- No API routes (no app/api/)
-- Contact form and resume upload are client-side only mocks
+## Backend (MongoDB Atlas - connected)
+- DB: sushmit_energy (Atlas cluster0.zsxcvne.mongodb.net)
+- Env: `.env.local` (gitignored) -> MONGODB_URI, MONGODB_DB. Copy `.env.example`
+- Helper: `lib/mongodb.js` (cached mongoose connection), `lib/api.js` (CRUD helpers), `lib/auth.js` (session/JWT)
+- Models (`lib/models/`): Admin, Page (strict:false for arbitrary page fields), BoardMember, ManagementMember, Project, NewsArticle, Album, MediaResource (group: media-kit|publications), Report, Contact, Setting, Message, Service, Job (status: Open|Closed, requirements: array)
+- API routes (`app/api/`): admin CRUD for every model under /api/admin/*, plus public /api/contact and /api/public/settings
+- Seed: `npm run seed` -> scripts/seed.js (real site content from lib/defaults.js; add `--force` to wipe+reseed a collection)
+- MinIO NOT yet configured (upload API pending credentials)
+- Contact form now persists messages to the Message collection
 <!-- END:sushmit-energy-state -->

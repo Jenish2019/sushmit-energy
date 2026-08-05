@@ -1,38 +1,33 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { Target, Eye, CheckCircle } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { Crosshair, Eye, CheckCircle } from '@phosphor-icons/react/dist/ssr';
+import { getPage } from '../../lib/data';
+import { DEFAULTS } from '../../lib/defaults';
 
-export default function AboutPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function AboutPage() {
+  const about = await getPage('about-us');
+  const paragraphs = about.paragraphs || DEFAULTS.about.paragraphs;
+  const vision = about.vision || DEFAULTS.about.vision;
+  const mission = about.mission || DEFAULTS.about.mission;
+  const objectives = about.objectives || DEFAULTS.about.objectives;
+  const title = about.title || DEFAULTS.about.title;
+  const subtitle = about.subtitle || DEFAULTS.about.subtitle;
+
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>About Sushmit Energy</h1>
-            <p>Leading hydropower development company in Nepal</p>
-          </div>
-        </section>
+        <PageHero title={title} subtitle={subtitle} />
 
         <section className="about-content section-padding">
           <div className="container">
             <div className="about-text">
-              <p>
-                <strong>Sushmit Energy Pvt. Ltd</strong> is a leading hydropower project
-                development company established with the aim of expanding hydro energy investment
-                in the Nepali market. We specialize in the development and management of hydro
-                projects with the aim of cost-effective investment and high level of profit to the
-                investors and the nation as well. We are continuously working for leading the
-                hydro energy sectors and qualified us in investment engineering. We value the
-                time, money and energy of our partners and guarantee the highest return possible.
-              </p>
-              <p>
-                Sushmit Energy is currently working on four hydropower projects aimed at
-                generating 93+ MW of electricity upon its completion. Backed by energy, financial
-                and hydro experts, we can handle any size of project and accomplish the desired
-                results.
-              </p>
+              {paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
             </div>
 
             <div className="about-cards">
@@ -41,34 +36,21 @@ export default function AboutPage() {
                   <Eye size={32} style={{ color: 'var(--primary-green)' }} />
                 </div>
                 <h3>Vision</h3>
-                <p>
-                  We envision developing alternative and eco-friendly sources of energy by
-                  promoting people&apos;s participation, investment and advanced technology where
-                  the value of shareholders are maximized and better wealth is created.
-                </p>
+                <p>{vision}</p>
               </div>
               <div className="about-card">
                 <div className="about-card-icon" style={{ background: '#e3f2fd' }}>
-                  <Target size={32} style={{ color: 'var(--primary-blue)' }} />
+                  <Crosshair size={32} style={{ color: 'var(--primary-blue)' }} />
                 </div>
                 <h3>Mission</h3>
-                <p>
-                  We will create an atmosphere of investment for the people and ensure value of
-                  their profit increment by suggesting the best hydro product for investment,
-                  managing the company professionally, selecting the best products, and involving
-                  partnership in the sphere of energy investment.
-                </p>
+                <p>{mission}</p>
               </div>
               <div className="about-card">
                 <div className="about-card-icon" style={{ background: '#fff3e0' }}>
                   <CheckCircle size={32} style={{ color: '#f57c00' }} />
                 </div>
                 <h3>Overall Objectives</h3>
-                <p>
-                  To be the hydropower production and investment experts which will ultimately
-                  provide our stakeholders a high value of shares and dignity to be associated
-                  with.
-                </p>
+                <p>{objectives}</p>
               </div>
             </div>
           </div>
@@ -77,32 +59,6 @@ export default function AboutPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container {
-          position: relative;
-          z-index: 1;
-        }
-        .page-banner h1 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          margin-bottom: 12px;
-        }
-        .page-banner p {
-          font-size: 1.1rem;
-          opacity: 0.85;
-        }
         .about-text {
           max-width: 800px;
           margin: 0 auto 60px;
@@ -152,9 +108,6 @@ export default function AboutPage() {
         @media (max-width: 768px) {
           .about-cards {
             grid-template-columns: 1fr;
-          }
-          .page-banner h1 {
-            font-size: 1.8rem;
           }
         }
       `}</style>

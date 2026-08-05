@@ -1,31 +1,31 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { FileText, Download } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { FileText, Download } from '@phosphor-icons/react/dist/ssr';
+import { getPage } from '../../lib/data';
+import { DEFAULTS } from '../../lib/defaults';
 
-export default function PolicyPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function PolicyPage() {
+  const page = await getPage('policy');
+  const title = page.heading || page.title || DEFAULTS.policy.heading;
+  const description = page.description || DEFAULTS.policy.description;
+  const fileUrl = page.file || page.fileUrl || DEFAULTS.policy.fileUrl;
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Policy</h1>
-            <p>Energy policies and regulatory framework</p>
-          </div>
-        </section>
+        <PageHero title="Policy" subtitle="Energy policies and regulatory framework" />
 
         <section className="section-padding">
           <div className="container">
             <div className="policy-card">
               <FileText size={40} className="policy-icon" />
-              <h2>Energy Profile and Policy of Nepal</h2>
-              <p>
-                Comprehensive document covering Nepal&apos;s energy sector profile, policies, and
-                regulatory framework for hydropower development and investment.
-              </p>
+              <h2>{title}</h2>
+              <p>{description}</p>
               <a
-                href="https://web.archive.org/web/20260121104039/https://www.sushmitenergy.com/wp-content/uploads/2017/12/Energy-Sector.pdf"
+                href={fileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary"
@@ -39,22 +39,6 @@ export default function PolicyPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container { position: relative; z-index: 1; }
-        .page-banner h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
-        .page-banner p { font-size: 1.1rem; opacity: 0.85; }
         .policy-card {
           max-width: 600px;
           margin: 0 auto;
@@ -79,7 +63,6 @@ export default function PolicyPage() {
           line-height: 1.6;
         }
         @media (max-width: 768px) {
-          .page-banner h1 { font-size: 1.8rem; }
           .policy-card { padding: 40px 24px; }
         }
       `}</style>

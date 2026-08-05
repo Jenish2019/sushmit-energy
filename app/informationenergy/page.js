@@ -1,58 +1,18 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { Calendar, ArrowUpRight, TrendingUp, BarChart3, Lightbulb } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { CalendarBlank, ArrowUpRight, TrendUp, ChartBar, Lightbulb } from '@phosphor-icons/react/dist/ssr';
+import { getNews } from '../../lib/data';
 
-const articles = [
-  {
-    title: 'Nepal\'s Hydropower Potential: Current Status and Future Prospects',
-    date: 'March 10, 2026',
-    summary: 'Nepal has an estimated hydropower potential of 83,000 MW, of which only about 3% has been developed. This article explores the current state of the sector and the immense opportunities ahead.',
-    category: 'Industry Analysis',
-  },
-  {
-    title: 'Government Announces New Policy to Boost Renewable Energy Investment',
-    date: 'February 5, 2026',
-    summary: 'The Government of Nepal has unveiled a new renewable energy policy offering tax incentives and streamlined approval processes to attract both domestic and foreign investment in the energy sector.',
-    category: 'Policy Update',
-  },
-  {
-    title: 'Regional Power Trade: Nepal\'s Role in South Asian Energy Security',
-    date: 'January 18, 2026',
-    summary: 'With cross-border electricity trade agreements in place, Nepal is positioning itself as a key energy exporter in South Asia, with potential to supply power to India, Bangladesh, and beyond.',
-    category: 'Regional News',
-  },
-  {
-    title: 'Climate Resilience in Hydropower: Adapting to Changing Weather Patterns',
-    date: 'December 22, 2025',
-    summary: 'As climate change affects glacial melt and rainfall patterns, Nepali hydropower developers are adopting new technologies and strategies to ensure long-term project viability.',
-    category: 'Technology',
-  },
-  {
-    title: 'Nepal Electricity Authority Reports Surplus Power Generation',
-    date: 'November 8, 2025',
-    summary: 'For the first time in its history, Nepal has achieved surplus electricity generation during the wet season, marking a major milestone in the country\'s energy journey.',
-    category: 'Market Update',
-  },
-  {
-    title: 'Hydropower and Sustainable Development: Balancing Energy and Environment',
-    date: 'September 30, 2025',
-    summary: 'Experts discuss how run-of-river hydropower projects can coexist with environmental conservation, highlighting best practices from successful projects across Nepal.',
-    category: 'Sustainability',
-  },
-];
+export const dynamic = 'force-dynamic';
 
-export default function EnergyNewsPage() {
+export default async function EnergyNewsPage() {
+  const articles = await getNews('Energy');
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Energy News</h1>
-            <p>Industry insights, trends, and developments in the energy sector</p>
-          </div>
-        </section>
+        <PageHero title="Energy News" subtitle="Industry insights, trends, and developments in the energy sector" />
 
         <section className="section-padding">
           <div className="container">
@@ -60,14 +20,14 @@ export default function EnergyNewsPage() {
               {articles.map((item, i) => (
                 <article key={i} className="article-card">
                   <div className="article-icon">
-                    {i % 3 === 0 ? <TrendingUp size={24} /> : i % 3 === 1 ? <BarChart3 size={24} /> : <Lightbulb size={24} />}
+                    {i % 3 === 0 ? <TrendUp size={24} /> : i % 3 === 1 ? <ChartBar size={24} /> : <Lightbulb size={24} />}
                   </div>
                   <span className="article-category">{item.category}</span>
                   <h2 className="article-title">{item.title}</h2>
                   <p className="article-summary">{item.summary}</p>
                   <div className="article-footer">
                     <span className="article-date">
-                      <Calendar size={14} />
+                      <CalendarBlank size={14} />
                       {item.date}
                     </span>
                     <a href="#" className="article-read-more">
@@ -83,32 +43,6 @@ export default function EnergyNewsPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container {
-          position: relative;
-          z-index: 1;
-        }
-        .page-banner h1 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          margin-bottom: 12px;
-        }
-        .page-banner p {
-          font-size: 1.1rem;
-          opacity: 0.85;
-        }
         .news-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -191,9 +125,6 @@ export default function EnergyNewsPage() {
           gap: 8px;
         }
         @media (max-width: 768px) {
-          .page-banner h1 {
-            font-size: 1.8rem;
-          }
           .news-grid {
             grid-template-columns: 1fr;
           }

@@ -1,69 +1,33 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { ExternalLink, FileDown, ArrowUpRight } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { ArrowSquareOut, FileArrowDown, ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
+import { getPage } from '../../lib/data';
+import { DEFAULTS } from '../../lib/defaults';
 
-const resources = [
-  { name: 'Nepal Investment Guide 2018 - English Version', file: 'http://ibn.gov.np/uploads/files/repository/Nepal%20Investment%20Guide%202018.pdf' },
-  { name: 'Nepal Investment Guide 2018 - Chinese Version', file: 'http://ibn.gov.np/uploads/files/repository/IBN_Investment%20Guide%20Book_Chinese.pdf' },
-  { name: 'Nepal Investment Guide 2018 - Japanese Version', file: 'http://www.ibn.gov.np/uploads/files/repository/IBN_Investment%20Guide%20Book_Japanese_Final.pdf' },
-];
+export const dynamic = 'force-dynamic';
 
-const links = [
-  { name: 'Nepal Investment Summit', url: 'http://investmentsummitnepal.com/' },
-  { name: 'Government of Nepal Ministry of Energy', url: 'http://www.moen.gov.np/' },
-  { name: 'Nepal Electricity Authority', url: 'http://www.nea.org.np/' },
-  { name: 'Department of Electricity Development (DOED)', url: 'http://www.doed.gov.np/' },
-  { name: 'Department of Land Reform and Management', url: 'http://www.dolrm.gov.np/' },
-];
-
-export default function InvestmentPage() {
+export default async function InvestmentPage() {
+  const investment = await getPage('investment-opportunity');
+  const title = investment.title || DEFAULTS.investment.title;
+  const subtitle = investment.subtitle || DEFAULTS.investment.subtitle;
+  const heading = investment.heading || DEFAULTS.investment.heading;
+  const paragraphs = investment.paragraphs || DEFAULTS.investment.paragraphs;
+  const links = investment.links || DEFAULTS.investment.links;
+  const resources = investment.resources || DEFAULTS.investment.resources;
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Investment Opportunity in Nepal</h1>
-            <p>Harness Nepal&apos;s vast hydropower potential</p>
-          </div>
-        </section>
+        <PageHero title={title} subtitle={subtitle} />
 
         <section className="section-padding">
           <div className="container">
             <div className="investment-content">
-              <h2>Sector Overview</h2>
-              <p>
-                Nepal is rich in water resources with multiple sources of water, including
-                glaciers, snowmelt from the Himalayas, rainfall and ground water. There are 6,000
-                rivers, including rivulets and tributaries, totalling about 45,000 km in length.
-                The country contains 2.2% of the world&apos;s water resources.
-              </p>
-              <p>
-                Nepal&apos;s theoretical capacity for producing power from hydropower projects is
-                around 80,000 MW. However, as at 2014, installed capacity is only around 700 MW of
-                electricity, despite the fact that demand is over 1,000 MW. Thus, Nepal remains
-                one of the lowest energy consuming countries in the world. Demand for electricity
-                is increasing at 7&ndash;9% per year, and according to the forecast from Nepal
-                Electricity Authority, demand for electricity will reach 3,600 MW by 2027.
-              </p>
-              <p>
-                To deal with the shortage of electricity in Nepal, IBN and other government
-                agencies have stepped forward to implement mega hydropower projects. In September
-                2014, Nepal signed its first Project Development Agreement (PDA, concession
-                agreement) with a private developer, GMR LTD, to develop the Upper Karnali
-                Hydropower Project, a 900 MW project. IBN has also signed another PDA with SJVNL,
-                an Indian governmental entity, for the development of the 900 MW Arun III. The
-                combined cost of these two projects exceeds USD 2.5 billion. In addition, Nepal
-                has signed the Power Trade Agreement (PTA) with India, paving the way for the free
-                flow of electricity as a commodity across the border.
-              </p>
-              <p>
-                There are several other mega power projects (above 500 MW) in the early stages of
-                development, and IBN has the mandate to take these projects forward. These
-                projects are a high priority for the government and various incentives are in place
-                for investors.
-              </p>
+              <h2>{heading}</h2>
+              {paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
             </div>
 
             <div className="investment-sections">
@@ -80,7 +44,7 @@ export default function InvestmentPage() {
                       <span>{i + 1}</span>
                       <span>{link.name}</span>
                       <a href={link.url} target="_blank" rel="noopener noreferrer">
-                        Visit <ExternalLink size={14} />
+                        Visit <ArrowSquareOut size={14} />
                       </a>
                     </div>
                   ))}
@@ -92,7 +56,7 @@ export default function InvestmentPage() {
                 <div className="resources-list">
                   {resources.map((res, i) => (
                     <a key={i} href={res.file} target="_blank" rel="noopener noreferrer" className="resource-item">
-                      <FileDown size={20} />
+                      <FileArrowDown size={20} />
                       <span>{res.name}</span>
                       <ArrowUpRight size={16} />
                     </a>
@@ -106,22 +70,6 @@ export default function InvestmentPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container { position: relative; z-index: 1; }
-        .page-banner h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
-        .page-banner p { font-size: 1.1rem; opacity: 0.85; }
         .investment-content {
           max-width: 850px;
           margin: 0 auto 60px;
@@ -207,7 +155,6 @@ export default function InvestmentPage() {
         .resource-item svg { flex-shrink: 0; color: var(--primary-green); }
         @media (max-width: 768px) {
           .investment-sections { grid-template-columns: 1fr; }
-          .page-banner h1 { font-size: 1.8rem; }
         }
       `}</style>
     </>

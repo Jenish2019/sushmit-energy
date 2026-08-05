@@ -1,49 +1,18 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { ArrowUpRight, Zap } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { ArrowUpRight, Lightning } from '@phosphor-icons/react/dist/ssr';
+import { getProjects } from '../../lib/data';
 
-const projects = [
-  {
-    name: 'Myagdi Khola Hydropower Project',
-    capacity: '57.3 MW',
-    location: 'Myagdi District',
-    status: 'Ongoing',
-    description:
-      'A major hydropower project harnessing the flow of Myagdi Khola river. The project aims to generate 57.3 MW of clean electricity, contributing significantly to Nepal\'s energy grid.',
-    img: "https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/uploads/2017/03/slider1-1024x576.jpg",
-  },
-  {
-    name: 'Kunaban Khola Hydropower Project',
-    capacity: '24.78 MW',
-    location: 'Kunaban Khola',
-    status: 'Ongoing',
-    description:
-      'A medium-capacity hydropower project designed to utilize the water resources of Kunaban Khola efficiently. The project represents sustainable development in the region.',
-    img: "https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/uploads/2017/04/imageforsusmit-1024x576.png",
-  },
-  {
-    name: 'Myagdi Khola-B Hydropower Project',
-    capacity: '12.5 MW',
-    location: 'Myagdi District',
-    status: 'Ongoing',
-    description:
-      'A secondary project on the Myagdi Khola river system, complementing the main Myagdi Khola project. Designed to maximize the hydroelectric potential of the watershed.',
-    img: "https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/uploads/2017/04/imagfor2-1024x576.jpg",
-  },
-];
+export const dynamic = 'force-dynamic';
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getProjects();
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Our Projects</h1>
-            <p>Developing 93+ MW of sustainable hydropower across Nepal</p>
-          </div>
-        </section>
+        <PageHero title="Our Projects" subtitle="Developing 93+ MW of sustainable hydropower across Nepal" />
 
         <section className="section-padding">
           <div className="container">
@@ -51,19 +20,19 @@ export default function ProjectsPage() {
               {projects.map((project, i) => (
                 <div key={i} className="project-detail-card">
                   <div className="project-detail-image">
-                    <img src={project.img} alt={project.name} />
+                    <img src={project.image} alt={project.name} />
                   </div>
                   <div className="project-detail-content">
                     <div className="project-detail-meta">
                       <span className="project-capacity-badge">
-                        <Zap size={16} /> {project.capacity}
+                        <Lightning size={16} /> {project.capacity}
                       </span>
                       <span className="project-status">{project.status}</span>
                     </div>
                     <h2>{project.name}</h2>
                     <p className="project-location">{project.location}</p>
-                    <p className="project-description">{project.description}</p>
-                    <a href={`/${project.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}/`} className="btn btn-primary">
+                    <p className="project-description">{project.overview}</p>
+                    <a href={`/${project.slug}/`} className="btn btn-primary">
                       View Details <ArrowUpRight size={18} />
                     </a>
                   </div>
@@ -76,32 +45,6 @@ export default function ProjectsPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container {
-          position: relative;
-          z-index: 1;
-        }
-        .page-banner h1 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          margin-bottom: 12px;
-        }
-        .page-banner p {
-          font-size: 1.1rem;
-          opacity: 0.85;
-        }
         .projects-list {
           display: flex;
           flex-direction: column;
@@ -196,9 +139,6 @@ export default function ProjectsPage() {
           }
           .project-detail-content h2 {
             font-size: 1.3rem;
-          }
-          .page-banner h1 {
-            font-size: 1.8rem;
           }
         }
       `}</style>

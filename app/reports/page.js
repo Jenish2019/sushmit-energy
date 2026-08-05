@@ -1,31 +1,20 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { FileText, Download, Calendar } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { FileText, Download, CalendarBlank } from '@phosphor-icons/react/dist/ssr';
+import { getReports } from '../../lib/data';
 
-const annualReports = [
-  { year: '2024/25', date: 'October 2025', size: '4.8 MB' },
-  { year: '2023/24', date: 'October 2024', size: '4.5 MB' },
-  { year: '2022/23', date: 'October 2023', size: '4.2 MB' },
-];
+export const dynamic = 'force-dynamic';
 
-const quarterlyReports = [
-  { quarter: 'Q3 2025/26', period: 'Jan–Mar 2026', size: '1.2 MB' },
-  { quarter: 'Q2 2025/26', period: 'Oct–Dec 2025', size: '1.1 MB' },
-  { quarter: 'Q1 2025/26', period: 'Jul–Sep 2025', size: '1.3 MB' },
-];
-
-export default function ReportsPage() {
+export default async function ReportsPage() {
+  const reports = await getReports();
+  const annualReports = reports.Annual || [];
+  const quarterlyReports = reports.Quarterly || [];
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Reports</h1>
-            <p>Annual and quarterly reports for investors and stakeholders</p>
-          </div>
-        </section>
+        <PageHero title="Reports" subtitle="Annual and quarterly reports for investors and stakeholders" />
 
         <section className="section-padding">
           <div className="container">
@@ -36,12 +25,12 @@ export default function ReportsPage() {
                   {annualReports.map((r, i) => (
                     <div key={i} className="report-item">
                       <div className="report-item-info">
-                        <span className="report-name">Annual Report {r.year}</span>
+                        <span className="report-name">{r.title}</span>
                         <span className="report-meta">
-                          <Calendar size={12} /> {r.date} &middot; {r.size}
+                          <CalendarBlank size={12} /> {r.date} {r.size ? `· ${r.size}` : ''}
                         </span>
                       </div>
-                      <a href="#" className="report-download-btn" title="Download">
+                      <a href={r.fileUrl || '#'} target={r.fileUrl ? '_blank' : undefined} rel={r.fileUrl ? 'noreferrer' : undefined} className="report-download-btn" title="Download">
                         <Download size={18} />
                       </a>
                     </div>
@@ -54,10 +43,10 @@ export default function ReportsPage() {
                   {quarterlyReports.map((r, i) => (
                     <div key={i} className="report-item">
                       <div className="report-item-info">
-                        <span className="report-name">{r.quarter}</span>
-                        <span className="report-meta">{r.period} &middot; {r.size}</span>
+                        <span className="report-name">{r.title}</span>
+                        <span className="report-meta">{r.date} {r.size ? `· ${r.size}` : ''}</span>
                       </div>
-                      <a href="#" className="report-download-btn" title="Download">
+                      <a href={r.fileUrl || '#'} target={r.fileUrl ? '_blank' : undefined} rel={r.fileUrl ? 'noreferrer' : undefined} className="report-download-btn" title="Download">
                         <Download size={18} />
                       </a>
                     </div>
@@ -71,22 +60,6 @@ export default function ReportsPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container { position: relative; z-index: 1; }
-        .page-banner h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
-        .page-banner p { font-size: 1.1rem; opacity: 0.85; }
         .reports-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
@@ -160,7 +133,6 @@ export default function ReportsPage() {
         }
         @media (max-width: 768px) {
           .reports-grid { grid-template-columns: 1fr; }
-          .page-banner h1 { font-size: 1.8rem; }
         }
       `}</style>
     </>

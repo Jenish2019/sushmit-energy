@@ -1,64 +1,29 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { Download, Image, FileText, Video, FileArchive } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { Download, Image, FileText, VideoCamera, FileZip } from '@phosphor-icons/react/dist/ssr';
+import { getMediaResources } from '../../lib/data';
 
-const resources = [
-  {
-    title: 'Sushmit Energy Company Profile',
-    description: 'Complete company overview including project portfolio, management team, and financial highlights.',
-    format: 'PDF',
-    size: '2.4 MB',
-    icon: <FileText size={24} />,
-  },
-  {
-    title: 'Logo Pack (PNG + SVG)',
-    description: 'Official Sushmit Energy logo in various formats and resolutions for print and digital use.',
-    format: 'ZIP',
-    size: '1.8 MB',
-    icon: <Image size={24} />,
-  },
-  {
-    title: 'Project Photo Gallery (High Resolution)',
-    description: 'High-resolution photos of our hydropower projects, suitable for publications and presentations.',
-    format: 'ZIP',
-    size: '15.6 MB',
-    icon: <Image size={24} />,
-  },
-  {
-    title: 'Corporate Brochure',
-    description: 'Printed-quality brochure detailing our mission, vision, projects, and investment opportunities.',
-    format: 'PDF',
-    size: '4.2 MB',
-    icon: <FileText size={24} />,
-  },
-  {
-    title: 'Brand Guidelines',
-    description: 'Official brand usage guidelines including color palette, typography, and logo usage rules.',
-    format: 'PDF',
-    size: '1.1 MB',
-    icon: <FileArchive size={24} />,
-  },
-  {
-    title: 'Company Overview Video',
-    description: 'A short promotional video showcasing Sushmit Energy\'s projects and commitment to clean energy.',
-    format: 'MP4',
-    size: '48 MB',
-    icon: <Video size={24} />,
-  },
-];
+export const dynamic = 'force-dynamic';
 
-export default function MediaKitPage() {
+export default async function MediaKitPage() {
+  const fetched = await getMediaResources('media-kit');
+  const resources = fetched.map((r) => {
+    const format = r.format || r.type || 'PDF';
+    const icon = /zip/i.test(format)
+      ? <Image size={24} />
+      : /mp4|video/i.test(format)
+        ? <VideoCamera size={24} />
+        : /archive/i.test(format)
+          ? <FileZip size={24} />
+          : <FileText size={24} />;
+    return { ...r, format, icon };
+  });
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Media Kit</h1>
-            <p>Downloadable resources for media and合作伙伴</p>
-          </div>
-        </section>
+        <PageHero title="Media Kit" subtitle="Downloadable resources for media and合作伙伴" />
 
         <section className="intro section-padding">
           <div className="container">
@@ -90,7 +55,7 @@ export default function MediaKitPage() {
                       <span className="resource-size">{item.size}</span>
                     </div>
                   </div>
-                  <a href="#" className="resource-download">
+                  <a href={item.fileUrl || '#'} target={item.fileUrl ? '_blank' : undefined} rel={item.fileUrl ? 'noreferrer' : undefined} className="resource-download">
                     <Download size={20} />
                   </a>
                 </div>
@@ -102,32 +67,6 @@ export default function MediaKitPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container {
-          position: relative;
-          z-index: 1;
-        }
-        .page-banner h1 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          margin-bottom: 12px;
-        }
-        .page-banner p {
-          font-size: 1.1rem;
-          opacity: 0.85;
-        }
         .intro {
           padding: 60px 0 0;
         }
@@ -234,9 +173,6 @@ export default function MediaKitPage() {
           transform: scale(1.05);
         }
         @media (max-width: 768px) {
-          .page-banner h1 {
-            font-size: 1.8rem;
-          }
           .resources-grid {
             grid-template-columns: 1fr;
           }

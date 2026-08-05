@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { Upload, Send, CheckCircle, FileUp } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { UploadSimple, PaperPlaneTilt, CheckCircle, FileArrowUp } from '@phosphor-icons/react/dist/ssr';
 
 export default function ResumePage() {
   const [form, setForm] = useState({
@@ -36,13 +37,7 @@ export default function ResumePage() {
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Drop Your Resume</h1>
-            <p>Join our talent pool for future opportunities</p>
-          </div>
-        </section>
+        <PageHero title="Drop Your Resume" subtitle="Join our talent pool for future opportunities" />
 
         <section className="section-padding">
           <div className="container">
@@ -132,7 +127,7 @@ export default function ResumePage() {
                       />
                     </div>
                     <div className="form-group">
-                      <label>Upload Resume (PDF/DOC)</label>
+                      <label>UploadSimple Resume (PDF/DOC)</label>
                       <div className="file-input-wrapper">
                         <input
                           type="file"
@@ -142,13 +137,13 @@ export default function ResumePage() {
                           onChange={handleFileChange}
                         />
                         <label htmlFor="resume-upload" className="file-label">
-                          <FileUp size={20} />
+                          <FileArrowUp size={20} />
                           {form.fileName ? form.fileName : 'Choose File'}
                         </label>
                       </div>
                     </div>
                     <button type="submit" className="btn btn-green" style={{ width: '100%', justifyContent: 'center' }}>
-                      Submit Application <Send size={18} />
+                      Submit Application <PaperPlaneTilt size={18} />
                     </button>
                   </form>
                 )}
@@ -160,32 +155,6 @@ export default function ResumePage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container {
-          position: relative;
-          z-index: 1;
-        }
-        .page-banner h1 {
-          font-size: 2.5rem;
-          font-weight: 800;
-          margin-bottom: 12px;
-        }
-        .page-banner p {
-          font-size: 1.1rem;
-          opacity: 0.85;
-        }
         .resume-layout {
           display: grid;
           grid-template-columns: 1fr 1.5fr;
@@ -312,9 +281,6 @@ export default function ResumePage() {
           max-width: 400px;
         }
         @media (max-width: 768px) {
-          .page-banner h1 {
-            font-size: 1.8rem;
-          }
           .resume-layout {
             grid-template-columns: 1fr;
           }

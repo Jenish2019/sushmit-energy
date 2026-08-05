@@ -1,6 +1,8 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { Linkedin } from 'lucide-react';
+import PageHero from '../../components/PageHero';
+import { getManagementMembers } from '../../lib/data';
+import { LinkedinLogo } from '@phosphor-icons/react/dist/ssr';
 
 const LinkedinIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -8,27 +10,15 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-const team = [
-  { name: 'Sushil Pokharel', role: 'Chairman', img: 'https://web.archive.org/web/20260315210330im_/https://www.sushmitenergy.com/wp-content/uploads/2017/01/sushil-pokharel.png' },
-  { name: 'Rajendra Shrestha', role: 'Managing Director', img: 'https://web.archive.org/web/20260315210330im_/https://www.sushmitenergy.com/wp-content/uploads/2017/01/sushil-pokharel.png' },
-  { name: 'Prakash Adhikari', role: 'Chief Operating Officer', img: 'https://web.archive.org/web/20260315210330im_/https://www.sushmitenergy.com/wp-content/uploads/2017/01/sushil-pokharel.png' },
-  { name: 'Anita Thapa', role: 'Chief Financial Officer', img: 'https://web.archive.org/web/20260315210330im_/https://www.sushmitenergy.com/wp-content/uploads/2017/01/sushil-pokharel.png' },
-  { name: 'Binod Acharya', role: 'Head of Engineering', img: 'https://web.archive.org/web/20260315210330im_/https://www.sushmitenergy.com/wp-content/uploads/2017/01/sushil-pokharel.png' },
-  { name: 'Sunita Sharma', role: 'Company Secretary', img: 'https://web.archive.org/web/20260315210330im_/https://www.sushmitenergy.com/wp-content/uploads/2017/01/sushil-pokharel.png' },
-];
+export const dynamic = 'force-dynamic';
 
-export default function ManagementTeamPage() {
+export default async function ManagementTeamPage() {
+  const team = await getManagementMembers();
   return (
     <>
       <Header />
       <main>
-        <section className="page-banner">
-          <div className="page-banner-overlay" />
-          <div className="container">
-            <h1>Our Management Team</h1>
-            <p>Dedicated professionals driving our vision forward</p>
-          </div>
-        </section>
+        <PageHero title="Our Management Team" subtitle="Dedicated professionals driving our vision forward" />
 
         <section className="section-padding">
           <div className="container">
@@ -44,11 +34,11 @@ export default function ManagementTeamPage() {
               {team.map((member, i) => (
                 <div key={i} className="team-card">
                   <div className="team-img">
-                    <img src={member.img} alt={member.name} />
+                    <img src={member.image} alt={member.name} />
                   </div>
                   <div className="team-info">
                     <h3>{member.name}</h3>
-                    <span className="team-role">{member.role}</span>
+                    <span className="team-role">{member.title}</span>
                   </div>
                 </div>
               ))}
@@ -59,22 +49,6 @@ export default function ManagementTeamPage() {
       <Footer />
 
       <style>{`
-        .page-banner {
-          position: relative;
-          padding: 100px 0;
-          background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
-          text-align: center;
-          color: white;
-        }
-        .page-banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: url('https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/kulekhani.jpg') center/cover no-repeat;
-          opacity: 0.1;
-        }
-        .page-banner .container { position: relative; z-index: 1; }
-        .page-banner h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
-        .page-banner p { font-size: 1.1rem; opacity: 0.85; }
         .intro-text {
           max-width: 700px;
           margin: 0 auto 60px;
@@ -120,9 +94,6 @@ export default function ManagementTeamPage() {
         }
         .team-info h3 { font-size: 1.05rem; margin: 0 0 4px; }
         .team-role { font-size: 0.85rem; color: var(--primary-green); font-weight: 600; }
-        @media (max-width: 768px) {
-          .page-banner h1 { font-size: 1.8rem; }
-        }
       `}</style>
     </>
   );
