@@ -1,16 +1,20 @@
 'use client';
 
 import StaticPageEditor from '@/components/StaticPageEditor';
+import { DEFAULTS } from '@/lib/defaults';
 
 export default function AdminOrgChartPage() {
+  const o = DEFAULTS.orgChart;
   return (
     <StaticPageEditor
       title="Organizational Chart"
-      description="Update the organizational chart image"
+      description="Update the organizational chart page"
       previewUrl="/organizational-chart/"
       slug="organizational-chart"
       fields={[
-        { key: 'image', label: 'Organizational Chart Image URL', type: 'image', placeholder: 'https://...', initial: 'https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/uploads/2017/03/slider1-1024x576.jpg' },
+        { key: 'title', label: 'Page Title', type: 'text', initial: o.title },
+        { key: 'subtitle', label: 'Page Subtitle', type: 'text', initial: o.subtitle },
+        { key: 'image', label: 'Organizational Chart Image URL', type: 'image', placeholder: 'https://...', initial: o.image },
       ]}
     />
   );

@@ -1,6 +1,7 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import PageHero from '../../components/PageHero';
+import RichText from '../../components/RichText';
 import { ArrowSquareOut, FileArrowDown, ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 import { getPage } from '../../lib/data';
 import { DEFAULTS } from '../../lib/defaults';
@@ -25,9 +26,7 @@ export default async function InvestmentPage() {
           <div className="container">
             <div className="investment-content">
               <h2>{heading}</h2>
-              {paragraphs.map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
+              <RichText html={paragraphs} />
             </div>
 
             <div className="investment-sections">

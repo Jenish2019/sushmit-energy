@@ -1,6 +1,7 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import PageHero from '../../components/PageHero';
+import RichText from '../../components/RichText';
 import { Crosshair, Eye, CheckCircle } from '@phosphor-icons/react/dist/ssr';
 import { getPage } from '../../lib/data';
 import { DEFAULTS } from '../../lib/defaults';
@@ -24,11 +25,7 @@ export default async function AboutPage() {
 
         <section className="about-content section-padding">
           <div className="container">
-            <div className="about-text">
-              {paragraphs.map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </div>
+            <RichText html={paragraphs} className="about-text" />
 
             <div className="about-cards">
               <div className="about-card">
@@ -36,21 +33,21 @@ export default async function AboutPage() {
                   <Eye size={32} style={{ color: 'var(--primary-green)' }} />
                 </div>
                 <h3>Vision</h3>
-                <p>{vision}</p>
+                <RichText html={vision} />
               </div>
               <div className="about-card">
                 <div className="about-card-icon" style={{ background: '#e3f2fd' }}>
                   <Crosshair size={32} style={{ color: 'var(--primary-blue)' }} />
                 </div>
                 <h3>Mission</h3>
-                <p>{mission}</p>
+                <RichText html={mission} />
               </div>
               <div className="about-card">
                 <div className="about-card-icon" style={{ background: '#e6f7ee' }}>
                   <CheckCircle size={32} style={{ color: '#0f8a43' }} />
                 </div>
                 <h3>Overall Objectives</h3>
-                <p>{objectives}</p>
+                <RichText html={objectives} />
               </div>
             </div>
           </div>

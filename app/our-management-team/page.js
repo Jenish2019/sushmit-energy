@@ -1,7 +1,8 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import PageHero from '../../components/PageHero';
-import { getManagementMembers } from '../../lib/data';
+import RichText from '../../components/RichText';
+import { getManagementMembers, getPage } from '../../lib/data';
 import { LinkedinLogo } from '@phosphor-icons/react/dist/ssr';
 
 const LinkedinIcon = () => (
@@ -14,21 +15,16 @@ export const dynamic = 'force-dynamic';
 
 export default async function ManagementTeamPage() {
   const team = await getManagementMembers();
+  const page = await getPage('our-management-team');
   return (
     <>
       <Header />
       <main>
-        <PageHero title="Our Management Team" subtitle="Dedicated professionals driving our vision forward" />
+        <PageHero title={page.title} subtitle={page.subtitle} />
 
         <section className="section-padding">
           <div className="container">
-            <div className="intro-text">
-              <p>
-                Our management team comprises experienced professionals with deep expertise in
-                hydropower development, finance, and project management. Together, they ensure
-                Sushmit Energy delivers on its commitment to sustainable energy and investor value.
-              </p>
-            </div>
+            <RichText html={page.intro} className="intro-text" />
 
             <div className="team-grid">
               {team.map((member, i) => (

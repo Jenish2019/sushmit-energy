@@ -1,6 +1,7 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import PageHero from '../../components/PageHero';
+import RichText from '../../components/RichText';
 import { Quotes } from '@phosphor-icons/react/dist/ssr';
 import { getPage } from '../../lib/data';
 import { DEFAULTS } from '../../lib/defaults';
@@ -37,12 +38,10 @@ export default async function ChairmanMessagePage() {
               <div className="chairman-page-content">
                 <Quotes size={48} className="chairman-quote-icon" />
                 <h2>{heading}</h2>
-                <p>{intro}</p>
-                {paragraphs.map((p, i) => (
-                  <p key={i}>{p}</p>
-                ))}
+                <RichText html={intro} />
+                <RichText html={paragraphs} />
                 <div className="chairman-signoff">
-                  <p>{signoff}</p>
+                  <RichText html={signoff} />
                   <strong>{name}</strong>
                   <span>{role}</span>
                 </div>

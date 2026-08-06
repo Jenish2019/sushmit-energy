@@ -1,8 +1,10 @@
 'use client';
 
 import StaticPageEditor from '@/components/StaticPageEditor';
+import { DEFAULTS } from '@/lib/defaults';
 
 export default function AdminChairmanPage() {
+  const c = DEFAULTS.chairman;
   return (
     <StaticPageEditor
       title="Chairman's Message"
@@ -10,9 +12,15 @@ export default function AdminChairmanPage() {
       previewUrl="/message-of-chairman/"
       slug="message-of-chairman"
       fields={[
-        { key: 'name', label: "Chairman's Name", type: 'text', initial: 'Mr. Chairman Name' },
-        { key: 'image', label: 'Photo URL', type: 'image', placeholder: 'https://...', initial: 'https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/uploads/2017/03/slider1-1024x576.jpg' },
-        { key: 'message', label: 'Message', type: 'textarea', rows: 8, initial: 'Welcome to Sushmit Energy. It is my privilege to lead this remarkable organization that is at the forefront of Nepal\'s renewable energy revolution. Our commitment to sustainable hydropower development is unwavering...' },
+        { key: 'title', label: 'Page Title', type: 'text', initial: c.title },
+        { key: 'subtitle', label: 'Page Subtitle', type: 'text', initial: c.subtitle },
+        { key: 'name', label: "Chairman's Name", type: 'text', initial: c.name },
+        { key: 'role', label: 'Role / Designation', type: 'text', initial: c.role },
+        { key: 'image', label: 'Photo URL', type: 'image', placeholder: 'https://...', initial: c.image },
+        { key: 'heading', label: 'Message Heading', type: 'text', initial: c.heading },
+        { key: 'intro', label: 'Introduction', type: 'richtext', initial: c.intro, placeholder: 'Opening paragraph...' },
+        { key: 'paragraphs', label: 'Message Body', type: 'richtext', initial: c.paragraphs, placeholder: 'Main message paragraphs...' },
+        { key: 'signoff', label: 'Sign-off Text', type: 'richtext', initial: c.signoff, placeholder: 'Closing line...' },
       ]}
     />
   );
