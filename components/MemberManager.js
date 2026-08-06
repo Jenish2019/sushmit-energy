@@ -15,6 +15,9 @@ export default function MemberManager({ apiPath, title, description, previewUrl,
   const [form, setForm] = useState(emptyForm);
   const [formError, setFormError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   const openAdd = () => {
     setEditingId(null);
@@ -37,12 +40,26 @@ export default function MemberManager({ apiPath, title, description, previewUrl,
     setModalOpen(true);
   };
 
-  const handleDelete = async (m) => {
-    if (!window.confirm(`Delete "${m.name}"?`)) return;
+  const openDelete = (m) => {
+    setDeleteTarget(m);
+    setDeleteError(null);
+  };
+
+  const closeDelete = () => {
+    if (!deleting) setDeleteTarget(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setDeleteError(null);
     try {
-      await deleteItem(m._id);
+      await deleteItem(deleteTarget._id);
+      setDeleteTarget(null);
     } catch (err) {
-      window.alert(err.message);
+      setDeleteError(err.message);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -97,7 +114,7 @@ export default function MemberManager({ apiPath, title, description, previewUrl,
               </div>
               <div className="member-actions">
                 <button className="icon-btn" title="Edit" onClick={() => openEdit(m)}><PencilSimple size={16} /></button>
-                <button className="icon-btn delete" title="Delete" onClick={() => handleDelete(m)}><Trash size={16} /></button>
+                <button className="icon-btn delete" title="Delete" onClick={() => openDelete(m)}><Trash size={16} /></button>
               </div>
             </div>
           ))}
@@ -129,6 +146,21 @@ export default function MemberManager({ apiPath, title, description, previewUrl,
             <button type="submit" className="btn btn-primary" disabled={submitting}>{submitting ? <CircleNotch size={18} className="spin" /> : null} {editingId ? 'Update Member' : 'Add Member'}</button>
           </div>
         </form>
+      </AdminModal>
+
+      <AdminModal open={deleteTarget ? true : false} onClose={closeDelete} title="Delete Member">
+        <div className="delete-modal">
+          <p className="delete-text">
+            Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.
+          </p>
+          {deleteError && <div className="mm-form-error">{deleteError}</div>}
+          <div className="modal-actions">
+            <button type="button" className="btn btn-outline" onClick={closeDelete} disabled={deleting}>Cancel</button>
+            <button type="button" className="delete-btn" onClick={confirmDelete} disabled={deleting}>
+              {deleting ? <CircleNotch size={18} className="spin" /> : <Trash size={18} />} {deleting ? 'Deleting...' : 'Delete Member'}
+            </button>
+          </div>
+        </div>
       </AdminModal>
 
       <style>{`
@@ -170,6 +202,12 @@ export default function MemberManager({ apiPath, title, description, previewUrl,
         .image-sm { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); flex-shrink: 0; }
         .image-sm img { width: 100%; height: 100%; object-fit: cover; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 8px; }
+        .delete-modal { display: flex; flex-direction: column; gap: 16px; }
+        .delete-text { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
+        .delete-text strong { color: var(--text-dark); }
+        .delete-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: var(--radius-sm); border: none; background: #dc2626; color: #fff; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .delete-btn:hover { background: #b91c1c; }
+        .delete-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .spin { animation: spin 0.9s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         @media (max-width: 640px) { .page-header { flex-direction: column; gap: 12px; } .row-fields { grid-template-columns: 1fr; } }
