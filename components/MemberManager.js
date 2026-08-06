@@ -85,7 +85,7 @@ export default function MemberManager({ apiPath, title, description, previewUrl,
       ) : (
         <div className="member-list">
           {members.map((m, idx) => (
-            <div key={m._id} className="member-card">
+            <div key={idx} className="member-card">
               <div className="member-order"><DotsSixVertical size={18} /><span className="order-num">{idx + 1}</span></div>
               <div className="member-avatar" style={{ background: `linear-gradient(135deg, ${accent}, ${accent}cc)` }}>
                 {m.image ? <img src={m.image} alt={m.name} /> : m.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
