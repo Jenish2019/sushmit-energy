@@ -7,11 +7,12 @@ import {
   SquaresFour, FileText, Users, ChatCircle, Briefcase,
   TrendUp, FolderOpen, Newspaper, Globe, Package, BookOpen,
   Image, Envelope, ShieldCheck, ChartBar, Gear, SignOut, List, X,
-  CaretDown, Buildings, GitBranch, NotePencil
+  CaretDown, Buildings, GitBranch, NotePencil, HouseSimple
 } from '@phosphor-icons/react/dist/ssr';
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: SquaresFour },
+  { href: '/admin/content/homepage', label: 'Homepage', icon: HouseSimple },
   {
     label: 'Company', icon: Buildings,
     children: [

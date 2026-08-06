@@ -4,35 +4,29 @@ import IntroSection from '../components/IntroSection';
 import Projects from '../components/Projects';
 import ChairmanMessage from '../components/ChairmanMessage';
 import Footer from '../components/Footer';
-import { getProjects, getPage, getBannerSlides } from '../lib/data';
-import { DEFAULTS } from '../lib/defaults';
+import { getProjects, getBannerSlides, getHomepage } from '../lib/data';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const [projects, chairmanPage, aboutPage, slides] = await Promise.all([
+  const [projects, slides, homepage] = await Promise.all([
     getProjects(),
-    getPage('message-of-chairman'),
-    getPage('about-us'),
     getBannerSlides(),
+    getHomepage(),
   ]);
-
-  const intro = {
-    ...DEFAULTS.homeAbout,
-    text: aboutPage?.paragraphs?.[0] || aboutPage?.intro || DEFAULTS.homeAbout.text,
-  };
 
   return (
     <>
       <Header />
       <main>
-        <Banner slides={slides} />
+        <Banner slides={slides} eyebrow={homepage.bannerEyebrow} />
         <IntroSection
-          about={intro}
-          history={DEFAULTS.homeHistory}
+          intro={homepage.intro}
+          stats={homepage.stats}
+          history={homepage.history}
         />
         <Projects projects={projects} />
-        <ChairmanMessage chairman={chairmanPage} />
+        <ChairmanMessage chairman={homepage.chairman} />
       </main>
       <Footer />
     </>

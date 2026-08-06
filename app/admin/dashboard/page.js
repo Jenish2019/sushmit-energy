@@ -10,7 +10,7 @@ const stats = [
   { label: 'Content Sections', value: '6', icon: FolderSimple, color: '#0c50a0', bg: '#e8f0fe' },
   { label: 'Published Pages', value: '27', icon: SquaresFour, color: '#0f8a43', bg: '#e6f7ee' },
   { label: 'Media Assets', value: '0', icon: Image, color: '#9333ea', bg: '#f3e8ff' },
-  { label: 'Pending Updates', value: '0', icon: NotePencil, color: '#ea580c', bg: '#fff7ed' },
+  { label: 'Pending Updates', value: '0', icon: NotePencil, color: '#0b6e35', bg: '#e6f7ee' },
 ];
 
 const quickLinks = [

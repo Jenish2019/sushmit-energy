@@ -7,6 +7,7 @@ export default function ChairmanMessage({ chairman = DEFAULTS.chairman }) {
   const name = chairman.name || DEFAULTS.chairman.name;
   const role = chairman.role || DEFAULTS.chairman.role;
   const image = chairman.image || DEFAULTS.chairman.image;
+  const label = chairman.label || 'A Word From Leadership';
 
   return (
     <section className="chairman-section">
@@ -23,7 +24,7 @@ export default function ChairmanMessage({ chairman = DEFAULTS.chairman }) {
           <Reveal variant="right">
             <div className="chairman-content">
               <Quotes size={54} weight="fill" className="quote-icon" />
-              <span className="section-label">A Word From Leadership</span>
+              <span className="section-label">{label}</span>
               <blockquote className="chairman-quote">“{quote}”</blockquote>
               <div className="chairman-author">
                 <strong>{name}</strong>

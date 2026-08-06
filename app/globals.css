@@ -3,8 +3,8 @@
   --primary-blue-dark: #083d7a;
   --primary-green: #0f8a43;
   --primary-green-dark: #0b6e35;
-  --accent: #f0a500;
-  --accent-dark: #d18e00;
+  --accent: #0f8a43;
+  --accent-dark: #0b6e35;
   --text-dark: #10213b;
   --text-body: #33475f;
   --text-muted: #64748b;
@@ -20,7 +20,7 @@
   --shadow-md: 0 6px 16px -6px rgba(16, 33, 59, 0.12);
   --shadow-lg: 0 18px 40px -12px rgba(16, 33, 59, 0.18);
   --shadow-xl: 0 30px 70px -18px rgba(16, 33, 59, 0.28);
-  --shadow-accent: 0 10px 26px -8px rgba(240, 165, 0, 0.55);
+  --shadow-accent: 0 10px 26px -8px rgba(15, 138, 67, 0.45);
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
@@ -194,7 +194,7 @@ img {
 
 .btn-accent {
   background: var(--accent);
-  color: #241a00;
+  color: white;
 }
 
 .btn-accent:hover {

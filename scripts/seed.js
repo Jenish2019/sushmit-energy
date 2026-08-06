@@ -190,6 +190,8 @@ const seedData = {
     siteEmail: DEFAULTS.settings.siteEmail,
     sitePhone: DEFAULTS.settings.sitePhone,
     address: DEFAULTS.settings.address,
+    bannerSlides: DEFAULTS.bannerSlides,
+    homepage: DEFAULTS.homepage,
   },
 
   jobs: DEFAULTS.jobs.map((j) => ({

@@ -233,14 +233,14 @@ export default function Footer() {
           border-radius: 12px;
           cursor: pointer;
           background: var(--accent);
-          color: #241a00;
+          color: white;
           font-family: var(--font-display), sans-serif;
           font-weight: 600;
           font-size: .88rem;
           transition: transform .2s var(--ease-out-expo), background .2s, box-shadow .2s;
           white-space: nowrap;
         }
-        .newsletter-btn:hover { background: #ffb41f; transform: translateY(-2px); box-shadow: var(--shadow-accent); }
+        .newsletter-btn:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: var(--shadow-accent); }
 
         .footer-contact { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; border-top: 1px solid rgba(255,255,255,.08); padding-top: 18px; }
         .contact-item {

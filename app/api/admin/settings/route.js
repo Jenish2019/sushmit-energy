@@ -1,7 +1,7 @@
 import { Setting } from '@/lib/api';
 import { connectDB, ok, fail } from '@/lib/api';
 
-const FIELDS = ['siteName', 'siteEmail', 'sitePhone', 'address', 'bannerSlides'];
+const FIELDS = ['siteName', 'siteEmail', 'sitePhone', 'address', 'bannerSlides', 'homepage'];
 
 export async function GET() {
   await connectDB();

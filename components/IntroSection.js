@@ -7,18 +7,12 @@ import {
 import Reveal from './Reveal';
 import { DEFAULTS } from '../lib/defaults';
 
-const timeline = [
-  { year: '2013', icon: Clock, color: '#0c50a0' },
-  { year: '2014', icon: Gear, color: '#d18e00' },
-  { year: '2015', icon: ClockCounterClockwise, color: '#0f8a43' },
-  { year: '2016', icon: ChartLine, color: '#20638f' },
-];
+const statIcons = [Users, FolderOpen, Lightning];
+const timelineIcons = [Clock, Gear, ClockCounterClockwise, ChartLine];
 
-const defaultStats = [
-  { icon: Users, value: 25, label: 'Engineers & Workers' },
-  { icon: FolderOpen, value: 4, label: 'Projects In Progress' },
-  { icon: Lightning, value: 93, label: 'Megawatt Generate' },
-];
+const DEFAULT_INTRO = DEFAULTS.homepage.intro;
+const DEFAULT_STATS = DEFAULTS.homepage.stats;
+const DEFAULT_HISTORY = DEFAULTS.homepage.history;
 
 function useCountUp(target) {
   const [value, setValue] = useState(() =>
@@ -55,8 +49,21 @@ function useCountUp(target) {
   return [ref, value];
 }
 
-export default function IntroSection({ about = DEFAULTS.homeAbout, stats = defaultStats, history = DEFAULTS.homeHistory }) {
+export default function IntroSection({
+  intro = DEFAULT_INTRO,
+  stats = DEFAULT_STATS,
+  history = DEFAULT_HISTORY,
+}) {
   const [activeTab, setActiveTab] = useState('about');
+
+  const image = intro.image || DEFAULT_INTRO.image;
+  const badgeYears = intro.badgeYears || DEFAULT_INTRO.badgeYears;
+  const badgeLabel = intro.badgeLabel || DEFAULT_INTRO.badgeLabel;
+  const historyLabel = history.label || 'Our Journey';
+  const historyTitle = history.title || 'Our History';
+  const historyText = history.text || DEFAULT_HISTORY.text;
+  const historyItems = Array.isArray(history.items) && history.items.length ? history.items : DEFAULT_HISTORY.items;
+  const statList = Array.isArray(stats) && stats.length ? stats : DEFAULT_STATS;
 
   return (
     <section className="intro-section" id="intro">
@@ -66,13 +73,13 @@ export default function IntroSection({ about = DEFAULTS.homeAbout, stats = defau
             <Reveal variant="left">
               <div className="intro-image-wrapper">
                 <img
-                  src="https://web.archive.org/web/20260414064744im_/https://www.sushmitenergy.com/wp-content/themes/sushmitenergy/images/sushilpkrl.jpg"
+                  src={image}
                   alt="Sushmit Energy"
                   className="intro-image"
                 />
                 <div className="intro-badge">
-                  <span className="badge-years">24+</span>
-                  <span className="badge-label">Years of<br />Experience</span>
+                  <span className="badge-years">{badgeYears}</span>
+                  <span className="badge-label">{badgeLabel}</span>
                 </div>
               </div>
             </Reveal>
@@ -102,25 +109,25 @@ export default function IntroSection({ about = DEFAULTS.homeAbout, stats = defau
             <Reveal>
               {activeTab === 'about' ? (
                 <div className="intro-content">
-                  <span className="section-label">{about.label || 'Welcome to'}</span>
-                  <h2 className="section-title">{about.title || 'Sushmit Energy'}</h2>
-                  <p className="intro-text">{about.text}</p>
+                  <span className="section-label">{intro.label || 'Welcome to'}</span>
+                  <h2 className="section-title">{intro.title || 'Sushmit Energy'}</h2>
+                  <p className="intro-text">{intro.text}</p>
                   <div className="stats-grid">
-                    {stats.map((s, i) => (
-                      <StatCard key={i} stat={s} />
+                    {statList.map((s, i) => (
+                      <StatCard key={i} stat={{ ...s, icon: statIcons[i % statIcons.length], value: Number(s.value) || 0 }} />
                     ))}
                   </div>
                 </div>
               ) : (
                 <div className="intro-content">
-                  <span className="section-label">Our Journey</span>
-                  <h2 className="section-title">Our History</h2>
+                  <span className="section-label">{historyLabel}</span>
+                  <h2 className="section-title">{historyTitle}</h2>
                   <p className="intro-text">
-                    {history.text || 'Over 24 years of experience and knowledge of international standards, technological changes, and industrial systems.'}
+                    {historyText}
                   </p>
                   <div className="timeline-modern">
-                    {timeline.map((item, i) => {
-                      const Icon = item.icon;
+                    {historyItems.map((item, i) => {
+                      const Icon = timelineIcons[i % timelineIcons.length];
                       return (
                         <div key={i} className="timeline-item">
                           <div className="timeline-marker" style={{ borderColor: item.color }}>
@@ -128,10 +135,9 @@ export default function IntroSection({ about = DEFAULTS.homeAbout, stats = defau
                           </div>
                           <div className="timeline-card">
                             <span className="timeline-year">{item.year}</span>
-                            <h4>Our Achievements</h4>
+                            <h4>{item.title}</h4>
                             <p>
-                              Over 24 years experience and knowledge international standards,
-                              technological changes and industrial systems.
+                              {item.description}
                             </p>
                           </div>
                         </div>

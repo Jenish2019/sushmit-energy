@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { CaretLeft, CaretRight, ArrowDown } from '@phosphor-icons/react/dist/ssr';
 import { DEFAULTS } from '../lib/defaults';
 
-export default function Banner({ slides = DEFAULTS.bannerSlides }) {
+export default function Banner({ slides = DEFAULTS.bannerSlides, eyebrow = DEFAULTS.homepage.bannerEyebrow }) {
   const [current, setCurrent] = useState(0);
 
   const prev = useCallback(() => {
@@ -32,7 +32,7 @@ export default function Banner({ slides = DEFAULTS.bannerSlides }) {
           >
             <div className="banner-overlay" />
             <div className="banner-content">
-              <span className="banner-eyebrow">Clean Energy · Hydropower · Nepal</span>
+              <span className="banner-eyebrow">{eyebrow}</span>
               <h1 className="banner-title">{slide.title}</h1>
               <div className="banner-cta-row">
                 <a href="/about-us/" className="btn btn-accent banner-cta">

@@ -8,7 +8,7 @@ import UploadButton from '@/components/UploadButton';
 
 const statusColors = {
   'Operational': '#0f8a43',
-  'Under Development': '#ea580c',
+  'Under Development': '#0b6e35',
   'Commissioned': '#0c50a0',
   'Ongoing': '#0f8a43',
 };

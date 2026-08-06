@@ -46,8 +46,8 @@ export default async function AboutPage() {
                 <p>{mission}</p>
               </div>
               <div className="about-card">
-                <div className="about-card-icon" style={{ background: '#fff3e0' }}>
-                  <CheckCircle size={32} style={{ color: '#f57c00' }} />
+                <div className="about-card-icon" style={{ background: '#e6f7ee' }}>
+                  <CheckCircle size={32} style={{ color: '#0f8a43' }} />
                 </div>
                 <h3>Overall Objectives</h3>
                 <p>{objectives}</p>

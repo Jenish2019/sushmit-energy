@@ -70,11 +70,11 @@ export default async function PublicationsPage() {
           width: 56px;
           height: 56px;
           border-radius: 12px;
-          background: #fff3e0;
+          background: #e6f7ee;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #f57c00;
+          color: #0f8a43;
           flex-shrink: 0;
         }
         .pub-info {
