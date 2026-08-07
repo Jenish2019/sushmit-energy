@@ -17,9 +17,9 @@ const quickLinks = [
   { href: '/admin/content/banners', label: 'Manage Banners', icon: Image, desc: 'Update homepage banners & hero sections' },
   { href: '/admin/content/about', label: 'Edit About Page', icon: FileTextIcon, desc: 'Update company vision, mission & objectives' },
   { href: '/admin/content/services', label: 'Manage Services', icon: Globe, desc: 'Edit service offerings & descriptions' },
-  { href: '/admin/content/projects', label: 'Manage Projects', icon: FolderOpen, desc: 'Update hydropower project details' },
+  { href: '/admin/projects', label: 'Manage Projects', icon: FolderOpen, desc: 'Update hydropower project details' },
   { href: '/admin/content/news', label: 'News & Updates', icon: Newspaper, desc: 'Post news articles & press releases' },
-  { href: '/admin/content/gallery', label: 'Manage Gallery', icon: Image, desc: 'UploadSimple & organize photo albums' },
+  { href: '/admin/gallery', label: 'Manage Gallery', icon: Image, desc: 'Upload & organize photo albums' },
 ];
 
 function FileTextIcon({ size }) {
