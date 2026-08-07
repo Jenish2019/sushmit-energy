@@ -3,6 +3,7 @@ import Footer from '../../components/Footer';
 import PageHero from '../../components/PageHero';
 import { MapPin, Clock, Briefcase, ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 import { getJobs } from '../../lib/data';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +23,7 @@ export default async function VacanciesPage() {
                 If you are committed to making a difference in Nepal&apos;s renewable energy sector, we want to hear from you.
               </p>
               <p>
-                To apply, please send your CV and cover letter to <a href="mailto:careers@sushmitenergy.com" className="email-link">careers@sushmitenergy.com</a>.
+                Click a role to view full details, or send your CV and cover letter to <a href="mailto:careers@sushmitenergy.com" className="email-link">careers@sushmitenergy.com</a>.
               </p>
             </div>
 
@@ -31,10 +32,12 @@ export default async function VacanciesPage() {
                 <div key={i} className="vacancy-card">
                   <div className="vacancy-header">
                     <div>
-                      <h2 className="vacancy-title">{job.title}</h2>
+                      <h2 className="vacancy-title">
+                        <Link href={`/current-vacancies/${job.slug}`}>{job.title}</Link>
+                      </h2>
                       <div className="vacancy-meta">
                         <span className="vacancy-meta-item">
-                          <Briefcase size= {14} />
+                          <Briefcase size={14} />
                           {job.department}
                         </span>
                         <span className="vacancy-meta-item">
@@ -58,9 +61,14 @@ export default async function VacanciesPage() {
                       ))}
                     </ul>
                   </div>
-                  <a href={`mailto:careers@sushmitenergy.com?subject=Application for ${encodeURIComponent(job.title)}`} className="btn btn-primary">
-                    Apply Now <ArrowUpRight size={18} />
-                  </a>
+                  <div className="vacancy-actions">
+                    <Link href={`/current-vacancies/${job.slug}`} className="btn btn-outline">
+                      View Details <ArrowUpRight size={18} />
+                    </Link>
+                    <a href={`mailto:careers@sushmitenergy.com?subject=Application for ${encodeURIComponent(job.title)}`} className="btn btn-primary">
+                      Apply Now <ArrowUpRight size={18} />
+                    </a>
+                  </div>
                 </div>
               ))}
             </div>
@@ -138,6 +146,9 @@ export default async function VacanciesPage() {
           font-weight: 600;
           white-space: nowrap;
         }
+        .vacancy-title a { color: var(--text-dark); text-decoration: none; transition: color .2s; }
+        .vacancy-title a:hover { color: var(--primary-blue); }
+        .vacancy-actions { display: flex; gap: 12px; flex-wrap: wrap; }
         .vacancy-description {
           font-size: 0.95rem;
           color: var(--text-muted);

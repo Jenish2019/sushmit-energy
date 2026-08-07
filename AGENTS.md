@@ -24,7 +24,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `/myagdi-khola-hydropower-project/` - 57.3 MW detail page
 - `/kunaban-khola-hydropower-project/` - 24.78 MW detail page
 - `/myagdi-khola-b-hydropower-project/` - 12.5 MW detail page
-- `/gallery/` - 3 album cards
+- `/gallery/` - Album cards linking to album detail pages
+- `/gallery/[slug]/` - Album detail page: photos in a responsive grid with a keyboard-navigable lightbox (`components/AlbumLightbox.js`); 404 if slug not found
 - `/contact-us/` - Contact form (posts to /api/contact)
 - `/policy/` - Policy download
 - `/reports/` - Annual & quarterly reports (was placeholder, now populated)
@@ -34,12 +35,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `/media-kit/` - 6 downloadable resources
 - `/blog/` - 6 blog posts
 - `/publications/` - 6 reports/publications
-- `/current-vacancies/` - 5 job listings (DB-driven via Job model)
+- `/current-vacancies/` - Job listings (DB-driven via Job model); cards link to detail pages
+- `/current-vacancies/[slug]/` - Job detail page: full description, requirements, "Other Open Positions" sidebar, Apply Now (mailto:careers@sushmitenergy.com, prefilled subject/body); 404 if not found
 - `/resume/` - Resume upload form (client-side)
 - `/login/` - Admin login page (real auth, redirects to /admin/dashboard)
 
 ## Public site is DB-driven (frontend wired to MongoDB)
-- Public pages are async server components with `export const dynamic = 'force-dynamic'` reading MongoDB via `lib/data.js` (`getProjects`, `getProjectBySlug`, `getBoardMembers`, `getManagementMembers`, `getNews(category)`, `getBlogPosts`, `getNewsArticleBySlug(slug)`, `getRecentArticles(limit)`, `getAlbums`, `getMediaResources(group)`, `getReports`, `getJobs`, `getPage(slug)`, `getSettings`, `getContact`)
+- Public pages are async server components with `export const dynamic = 'force-dynamic'` reading MongoDB via `lib/data.js` (`getProjects`, `getProjectBySlug`, `getBoardMembers`, `getManagementMembers`, `getNews(category)`, `getBlogPosts`, `getNewsArticleBySlug(slug)`, `getRecentArticles(limit)`, `getAlbums`, `getAlbumBySlug(slug)`, `getJobs`, `getJobBySlug(slug)`, `getMediaResources(group)`, `getReports`, `getPage(slug)`, `getSettings`, `getContact`)
 - DB-first with fallback to real site content in `lib/defaults.js` (used only when a collection is empty)
 - Client components (Header/Footer/Contact) fetch `/api/public/settings` (force-dynamic) for settings + contact
 - Shared `components/ProjectDetail.js` renders the 3 project detail pages; `components/ShareButtons.js` renders social share links (client)

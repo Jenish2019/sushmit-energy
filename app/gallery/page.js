@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function GalleryPage() {
   const fetched = await getAlbums();
-  const albums = fetched.map((a) => ({ title: a.name, img: a.cover, link: a.link || '#' }));
+  const albums = fetched.map((a) => ({ title: a.name, img: a.cover, link: a.slug ? `/gallery/${a.slug}` : (a.link || '#') }));
   return (
     <>
       <Header />
