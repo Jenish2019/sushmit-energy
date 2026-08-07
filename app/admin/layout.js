@@ -40,7 +40,7 @@ const navItems = [
   { href: '/admin/policy', label: 'Policy', icon: ShieldCheck },
   { href: '/admin/reports', label: 'Reports', icon: ChartBar },
   { href: '/admin/jobs', label: 'Job Board', icon: Briefcase },
-  { href: '/admin/settings', label: 'Gear', icon: Gear },
+  { href: '/admin/settings', label: 'Settings', icon: Gear },
 ];
 
 export default function AdminLayout({ children }) {
