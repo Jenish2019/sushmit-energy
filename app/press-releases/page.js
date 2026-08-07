@@ -3,6 +3,7 @@ import Footer from '../../components/Footer';
 import PageHero from '../../components/PageHero';
 import { CalendarBlank, ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 import { getNews } from '../../lib/data';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +19,8 @@ export default async function PressReleasesPage() {
           <div className="container">
             <div className="releases-list">
               {releases.map((item, i) => (
-                <article key={i} className="release-card">
+                <Link key={i} href={`/media/${item.slug}`} className="release-card-link">
+                <article className="release-card">
                   <div className="release-header">
                     <span className="release-category">{item.category}</span>
                     <span className="release-date">
@@ -28,10 +30,11 @@ export default async function PressReleasesPage() {
                   </div>
                   <h2 className="release-title">{item.title}</h2>
                   <p className="release-summary">{item.summary}</p>
-                  <a href="#" className="release-read-more">
+                  <span className="release-read-more">
                     Read More <ArrowUpRight size={16} />
-                  </a>
+                  </span>
                 </article>
+                </Link>
               ))}
             </div>
           </div>
@@ -47,6 +50,7 @@ export default async function PressReleasesPage() {
           flex-direction: column;
           gap: 24px;
         }
+        .release-card-link { text-decoration: none; color: inherit; display: block; }
         .release-card {
           background: var(--bg-white);
           border-radius: var(--radius-md);
@@ -54,7 +58,7 @@ export default async function PressReleasesPage() {
           border: 1px solid var(--border-color);
           transition: box-shadow 0.3s, transform 0.3s;
         }
-        .release-card:hover {
+        .release-card-link:hover .release-card {
           box-shadow: var(--shadow-md);
           transform: translateY(-2px);
         }

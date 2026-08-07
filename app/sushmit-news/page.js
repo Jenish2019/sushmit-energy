@@ -3,6 +3,7 @@ import Footer from '../../components/Footer';
 import PageHero from '../../components/PageHero';
 import { CalendarBlank, ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 import { getNews } from '../../lib/data';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,22 +19,24 @@ export default async function SushmitNewsPage() {
           <div className="container">
             <div className="news-list">
               {newsItems.map((item, i) => (
-                <article key={i} className="news-card">
+                <Link key={i} href={`/media/${item.slug}`} className="news-card-link">
+                <article className="news-card">
                   <div className="news-content">
                     <div className="news-meta">
                       <span className="news-date">
                         <CalendarBlank size={14} />
                         {item.date}
                       </span>
-                      <span className="news-source">{item.source}</span>
+                      <span className="news-source">{item.source || item.category}</span>
                     </div>
                     <h2 className="news-title">{item.title}</h2>
                     <p className="news-summary">{item.summary}</p>
-                    <a href="#" className="news-read-more">
+                    <span className="news-read-more">
                       Read Full Article <ArrowUpRight size={16} />
-                    </a>
+                    </span>
                   </div>
                 </article>
+                </Link>
               ))}
             </div>
           </div>
@@ -49,6 +52,7 @@ export default async function SushmitNewsPage() {
           flex-direction: column;
           gap: 24px;
         }
+        .news-card-link { text-decoration: none; color: inherit; display: block; }
         .news-card {
           background: var(--bg-white);
           border-radius: var(--radius-md);
@@ -56,7 +60,7 @@ export default async function SushmitNewsPage() {
           overflow: hidden;
           transition: box-shadow 0.3s, transform 0.3s;
         }
-        .news-card:hover {
+        .news-card-link:hover .news-card {
           box-shadow: var(--shadow-md);
           transform: translateY(-2px);
         }

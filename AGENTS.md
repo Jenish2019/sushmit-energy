@@ -30,7 +30,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `/reports/` - Annual & quarterly reports (was placeholder, now populated)
 - `/press-releases/` - 6 press releases
 - `/sushmit-news/` - 5 news articles
-- `/informationenergy/` - Energy news (6 articles)
+- `/media/[slug]/` - Universal article detail page (blogs, news, press releases). Archive-style: category badge + date/author meta, featured image, rich content, share buttons, sidebar (Quick Links + Latest Articles). 404 if slug not found. Card "Read More"/"Read Full Article" on `/blog/`, `/sushmit-news/`, `/press-releases/` link here.
 - `/media-kit/` - 6 downloadable resources
 - `/blog/` - 6 blog posts
 - `/publications/` - 6 reports/publications
@@ -39,10 +39,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `/login/` - Admin login page (real auth, redirects to /admin/dashboard)
 
 ## Public site is DB-driven (frontend wired to MongoDB)
-- Public pages are async server components with `export const dynamic = 'force-dynamic'` reading MongoDB via `lib/data.js` (`getProjects`, `getProjectBySlug`, `getBoardMembers`, `getManagementMembers`, `getNews(category)`, `getBlogPosts`, `getAlbums`, `getMediaResources(group)`, `getReports`, `getJobs`, `getPage(slug)`, `getSettings`, `getContact`)
+- Public pages are async server components with `export const dynamic = 'force-dynamic'` reading MongoDB via `lib/data.js` (`getProjects`, `getProjectBySlug`, `getBoardMembers`, `getManagementMembers`, `getNews(category)`, `getBlogPosts`, `getNewsArticleBySlug(slug)`, `getRecentArticles(limit)`, `getAlbums`, `getMediaResources(group)`, `getReports`, `getJobs`, `getPage(slug)`, `getSettings`, `getContact`)
 - DB-first with fallback to real site content in `lib/defaults.js` (used only when a collection is empty)
 - Client components (Header/Footer/Contact) fetch `/api/public/settings` (force-dynamic) for settings + contact
-- Shared `components/ProjectDetail.js` renders the 3 project detail pages
+- Shared `components/ProjectDetail.js` renders the 3 project detail pages; `components/ShareButtons.js` renders social share links (client)
 
 ## Admin Panel (/admin)
 - Dashboard, Company (About/Org Chart/Board/Chairman/Management/Investment), Projects, Media (Press Releases/Sushmit News/Energy News/Media Kit/Blog/Publications), Gallery, Contact Us, Policy, Reports, Job Board, Settings, Messages (API only)

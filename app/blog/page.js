@@ -3,6 +3,7 @@ import Footer from '../../components/Footer';
 import PageHero from '../../components/PageHero';
 import { CalendarBlank, ArrowUpRight, User, Tag } from '@phosphor-icons/react/dist/ssr';
 import { getBlogPosts } from '../../lib/data';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +19,8 @@ export default async function BlogPage() {
           <div className="container">
             <div className="blog-grid">
               {posts.map((post, i) => (
-                <article key={i} className="blog-card">
+                <Link key={i} href={`/media/${post.slug}`} className="blog-card-link">
+                <article className="blog-card">
                   <div className="blog-image">
                     <img src={post.image} alt={post.title} />
                     <span className="blog-category">{post.category}</span>
@@ -35,12 +37,13 @@ export default async function BlogPage() {
                       </span>
                     </div>
                     <h2 className="blog-title">{post.title}</h2>
-                    <p className="blog-excerpt">{post.excerpt}</p>
-                    <a href="#" className="blog-read-more">
+                    <p className="blog-excerpt">{post.summary}</p>
+                    <span className="blog-read-more">
                       Read More <ArrowUpRight size={16} />
-                    </a>
+                    </span>
                   </div>
                 </article>
+                </Link>
               ))}
             </div>
           </div>
@@ -54,6 +57,7 @@ export default async function BlogPage() {
           grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
           gap: 30px;
         }
+        .blog-card-link { text-decoration: none; color: inherit; display: block; }
         .blog-card {
           background: var(--bg-white);
           border-radius: var(--radius-md);
@@ -61,7 +65,7 @@ export default async function BlogPage() {
           border: 1px solid var(--border-color);
           transition: transform 0.3s, box-shadow 0.3s;
         }
-        .blog-card:hover {
+        .blog-card-link:hover .blog-card {
           transform: translateY(-4px);
           box-shadow: var(--shadow-lg);
         }
@@ -76,7 +80,7 @@ export default async function BlogPage() {
           object-fit: cover;
           transition: transform 0.5s;
         }
-        .blog-card:hover .blog-image img {
+        .blog-card-link:hover .blog-card .blog-image img {
           transform: scale(1.08);
         }
         .blog-category {
