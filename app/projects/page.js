@@ -1,18 +1,20 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import PageHero from '../../components/PageHero';
+import RichText from '../../components/RichText';
 import { ArrowUpRight, Lightning } from '@phosphor-icons/react/dist/ssr';
-import { getProjects } from '../../lib/data';
+import { getProjects, getPage } from '../../lib/data';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ProjectsPage() {
   const projects = await getProjects();
+  const page = await getPage('projects');
   return (
     <>
       <Header />
       <main>
-        <PageHero title="Our Projects" subtitle="Developing 93+ MW of sustainable hydropower across Nepal" />
+        <PageHero title={page.title} subtitle={page.subtitle} />
 
         <section className="section-padding">
           <div className="container">
@@ -31,7 +33,7 @@ export default async function ProjectsPage() {
                     </div>
                     <h2>{project.name}</h2>
                     <p className="project-location">{project.location}</p>
-                    <p className="project-description">{project.overview}</p>
+                    <RichText html={project.overview} className="project-description" />
                     <a href={`/${project.slug}/`} className="btn btn-primary">
                       View Details <ArrowUpRight size={18} />
                     </a>

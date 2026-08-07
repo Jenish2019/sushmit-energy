@@ -39,7 +39,6 @@ const navItems = [
     children: [
       { label: 'Press Releases', href: '/press-releases/' },
       { label: 'Sushmit Energy in the News', href: '/sushmit-news/' },
-      { label: 'Energy News', href: '/informationenergy/' },
       { label: 'Media Kit', href: '/media-kit/' },
       { label: 'Blog', href: '/blog/' },
       { label: 'Publications', href: '/publications/' },

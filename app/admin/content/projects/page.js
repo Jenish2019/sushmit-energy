@@ -5,6 +5,8 @@ import { Plus, PencilSimple, Trash, ArrowSquareOut, Image, CircleNotch } from '@
 import AdminModal from '@/components/AdminModal';
 import useCollection from '@/components/useCollection';
 import UploadButton from '@/components/UploadButton';
+import RichTextEditor from '@/components/RichTextEditor';
+import StaticPageEditor from '@/components/StaticPageEditor';
 
 const statusColors = {
   'Operational': '#0f8a43',
@@ -18,7 +20,7 @@ const projectStatuses = ['Under Development', 'Commissioned', 'Ongoing', 'Operat
 const emptyForm = {
   name: '', subtitle: '', capacity: '', location: '', status: 'Under Development',
   startDate: '', type: 'Run-of-River', river: '', annualEnergy: '',
-  overview: '', features: '', image: '', slug: '',
+  overview: '', features: '', image: '', slug: '', published: true,
 };
 
 export default function ProjectsPage() {
@@ -42,7 +44,7 @@ export default function ProjectsPage() {
       name: p.name || '', subtitle: p.subtitle || '', capacity: p.capacity || '', location: p.location || '',
       status: p.status || 'Under Development', startDate: p.startDate || '', type: p.type || 'Run-of-River',
       river: p.river || '', annualEnergy: p.annualEnergy || '', overview: p.overview || '',
-      features: (p.features || []).join('\n'), image: p.image || '', slug: p.slug || '',
+      features: (p.features || []).join('\n'), image: p.image || '', slug: p.slug || '', published: p.published !== false,
     });
     setFormError(null);
     setModalOpen(true);
@@ -78,6 +80,20 @@ export default function ProjectsPage() {
 
   return (
     <>
+      <div className="section-heading"><h2>Page Header</h2></div>
+      <StaticPageEditor
+        compact
+        title="Hero Title & Subtitle"
+        description="These appear at the top of the public projects page."
+        previewUrl="/projects/"
+        slug="projects"
+        fields={[
+          { key: 'title', label: 'Page Title', type: 'text', placeholder: 'Our Projects' },
+          { key: 'subtitle', label: 'Page Subtitle', type: 'text', placeholder: 'Developing 93+ MW of sustainable hydropower across Nepal' },
+        ]}
+      />
+      <div className="spacer" />
+
       <div className="page-header">
         <div>
           <h1>Projects</h1>
@@ -189,7 +205,7 @@ export default function ProjectsPage() {
             <label>Cover Image URL</label>
             <div className="image-input-row">
               <input className="form-input" value={form.image} onChange={e => setForm({ ...form, image: e.target.value })} placeholder="https://..." />
-              <UploadButton onUploaded={(url) => setForm({ ...form, image: url })} accept="image/*" label="UploadSimple" />
+              <UploadButton onUploaded={(url) => setForm({ ...form, image: url })} accept="image/*" label="Upload" />
               {form.image && (
                 <div className="image-preview-sm">
                   <img src={form.image} alt="preview" onError={(e) => { e.target.style.display = 'none' }} />
@@ -199,11 +215,17 @@ export default function ProjectsPage() {
           </div>
           <div className="form-group">
             <label>Project Overview</label>
-            <textarea className="form-textarea" rows={4} value={form.overview} onChange={e => setForm({ ...form, overview: e.target.value })} placeholder="Write the project overview / description..." />
+            <RichTextEditor value={form.overview} onChange={(html) => setForm({ ...form, overview: html })} placeholder="Write the project overview / description..." />
           </div>
           <div className="form-group">
             <label>Key Features <span className="field-hint">(one per line)</span></label>
             <textarea className="form-textarea" rows={4} value={form.features} onChange={e => setForm({ ...form, features: e.target.value })} placeholder={'Run-of-river design minimizing environmental impact\nAnnual energy generation of approximately 300 GWh\nState-of-the-art turbine and generator technology'} />
+          </div>
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input type="checkbox" checked={!!form.published} onChange={e => setForm({ ...form, published: e.target.checked })} />
+              <span>Published (visible on the public site)</span>
+            </label>
           </div>
           {formError && <div className="proj-form-error">{formError}</div>}
           <div className="modal-actions">
@@ -249,6 +271,10 @@ export default function ProjectsPage() {
         .image-preview-sm { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); flex-shrink: 0; }
         .image-preview-sm img { width: 100%; height: 100%; object-fit: cover; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 8px; }
+        .section-heading h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; }
+        .spacer { height: 36px; }
+        .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem; }
+        .checkbox-label input { width: 16px; height: 16px; accent-color: var(--primary-blue); }
         .spin { animation: spin 0.9s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         @media (max-width: 640px) { .row-fields { grid-template-columns: 1fr; } .page-header { flex-direction: column; gap: 12px; } }

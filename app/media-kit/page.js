@@ -23,7 +23,7 @@ export default async function MediaKitPage() {
     <>
       <Header />
       <main>
-        <PageHero title="Media Kit" subtitle="Downloadable resources for media and合作伙伴" />
+        <PageHero title="Media Kit" subtitle="Downloadable resources for media and partners" />
 
         <section className="intro section-padding">
           <div className="container">

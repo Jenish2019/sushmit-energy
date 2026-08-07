@@ -166,7 +166,6 @@ export default function IntroSection({
         .intro-image-wrapper {
           position: relative;
           border-radius: var(--radius-xl);
-          overflow: hidden;
           box-shadow: var(--shadow-xl);
         }
         .intro-image {
@@ -174,12 +173,14 @@ export default function IntroSection({
           height: 460px;
           object-fit: cover;
           display: block;
+          border-radius: var(--radius-xl);
           transition: transform .7s var(--ease-out-expo);
         }
         .intro-image-wrapper::after {
           content: '';
           position: absolute;
           inset: 0;
+          border-radius: var(--radius-xl);
           background: linear-gradient(200deg, transparent 50%, rgba(5,16,36,.55));
         }
         .intro-image-wrapper:hover .intro-image { transform: scale(1.05); }

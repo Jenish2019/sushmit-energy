@@ -1,5 +1,6 @@
 import { Lightning, MapPin, ChartBar, Clock, CheckCircle, ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 import PageHero from './PageHero';
+import RichText from './RichText';
 import Reveal from './Reveal';
 import Link from 'next/link';
 
@@ -47,7 +48,7 @@ export default function ProjectDetail({ project }) {
             <Reveal>
               <div className="project-description-section">
                 <h2>Project Overview</h2>
-                <p>{project.overview}</p>
+                <RichText html={project.overview} />
 
                 <h3>Key Features</h3>
                 <ul className="feature-list">

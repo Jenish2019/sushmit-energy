@@ -19,20 +19,20 @@ export default function ResourceTable({
   const { items, loading, error, createItem, updateItem, deleteItem } = useCollection(apiPath, { query });
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ title: '', type: typeOptions[0], date: '', fileUrl: '' });
+  const [form, setForm] = useState({ title: '', type: typeOptions[0], date: '', fileUrl: '', description: '', size: '' });
   const [formError, setFormError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   const openAdd = () => {
     setEditingId(null);
-    setForm({ title: '', type: typeOptions[0], date: new Date().toISOString().split('T')[0], fileUrl: '' });
+    setForm({ title: '', type: typeOptions[0], date: new Date().toISOString().split('T')[0], fileUrl: '', description: '', size: '' });
     setFormError(null);
     setModalOpen(true);
   };
 
   const openEdit = (item) => {
     setEditingId(item._id);
-    setForm({ title: item.title || '', type: item.type || typeOptions[0], date: item.date || '', fileUrl: item.fileUrl || '' });
+    setForm({ title: item.title || '', type: item.type || typeOptions[0], date: item.date || '', fileUrl: item.fileUrl || '', description: item.description || '', size: item.size || '' });
     setFormError(null);
     setModalOpen(true);
   };
@@ -103,7 +103,11 @@ export default function ResourceTable({
             <div className="form-group"><label>Type</label><select className="form-input" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>{typeOptions.map(t => <option key={t} value={t}>{t}</option>)}</select></div>
             <div className="form-group"><label>Date</label><input className="form-input" type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} /></div>
           </div>
-          <div className="form-group"><label>{fileLabel}</label><div className="file-url-row"><input className="form-input" value={form.fileUrl} onChange={e => setForm({ ...form, fileUrl: e.target.value })} placeholder="https://... or /uploads/..." /><UploadButton onUploaded={(url) => setForm({ ...form, fileUrl: url })} label="UploadSimple" maxSizeMB={50} /></div></div>
+          <div className="form-group"><label>{fileLabel}</label><div className="file-url-row"><input className="form-input" value={form.fileUrl} onChange={e => setForm({ ...form, fileUrl: e.target.value })} placeholder="https://... or /uploads/..." /><UploadButton onUploaded={(url) => setForm({ ...form, fileUrl: url })} label="Upload" maxSizeMB={50} /></div></div>
+          <div className="row-fields">
+            <div className="form-group"><label>File Size</label><input className="form-input" value={form.size} onChange={e => setForm({ ...form, size: e.target.value })} placeholder="e.g. 2.4 MB" /></div>
+          </div>
+          <div className="form-group"><label>Description</label><textarea className="form-input" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Short description shown in listings" /></div>
           {formError && <div className="res-form-error">{formError}</div>}
           <div className="modal-actions">
             <button type="button" className="btn btn-outline" onClick={() => setModalOpen(false)}>Cancel</button>

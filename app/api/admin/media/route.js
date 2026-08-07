@@ -1,7 +1,7 @@
 import { MediaResource } from '@/lib/api';
 import { list, create, fail } from '@/lib/api';
 
-const FIELDS = ['title', 'type', 'fileUrl', 'date', 'group'];
+const FIELDS = ['title', 'type', 'description', 'size', 'fileUrl', 'date', 'group'];
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

@@ -1,7 +1,7 @@
 import { MediaResource } from '@/lib/api';
 import { detail, update, remove, fail } from '@/lib/api';
 
-const FIELDS = ['title', 'type', 'fileUrl', 'date', 'group'];
+const FIELDS = ['title', 'type', 'description', 'size', 'fileUrl', 'date', 'group'];
 
 export async function GET(_request, { params }) {
   const { id } = await params;

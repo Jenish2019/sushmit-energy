@@ -27,7 +27,7 @@ export default function MemberManager({ apiPath, title, description, previewUrl,
   };
 
   const openEdit = (m) => {
-    setEditingId(m._id);
+    setEditingId(m._id ? String(m._id) : null);
     setForm({
       name: m.name || '',
       title: m.title || '',
@@ -54,7 +54,7 @@ export default function MemberManager({ apiPath, title, description, previewUrl,
     setDeleting(true);
     setDeleteError(null);
     try {
-      await deleteItem(deleteTarget._id);
+      await deleteItem(String(deleteTarget._id));
       setDeleteTarget(null);
     } catch (err) {
       setDeleteError(err.message);

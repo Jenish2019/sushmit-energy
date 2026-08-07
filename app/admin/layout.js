@@ -30,7 +30,6 @@ const navItems = [
     children: [
       { href: '/admin/media/press-releases', label: 'Press Releases', icon: Newspaper },
       { href: '/admin/media/news', label: 'Sushmit News', icon: Newspaper },
-      { href: '/admin/media/energy-news', label: 'Energy News', icon: Globe },
       { href: '/admin/media/media-kit', label: 'Media Kit', icon: Package },
       { href: '/admin/media/blog', label: 'Blog', icon: NotePencil },
       { href: '/admin/media/publications', label: 'Publications', icon: BookOpen },
