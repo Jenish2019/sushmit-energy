@@ -1,7 +1,6 @@
 import Header from '../components/Header';
 import ScrollProgress from '../components/ScrollProgress';
 import Banner from '../components/Banner';
-import Ticker from '../components/Ticker';
 import IntroSection from '../components/IntroSection';
 import KunabanShowcase from '../components/KunabanShowcase';
 import ChairmanMessage from '../components/ChairmanMessage';
@@ -18,10 +17,6 @@ export default async function Home() {
     getHomepage(),
   ]);
 
-  const tickerItems = projects
-    .filter((p) => p.name || p.title)
-    .map((p) => ({ title: p.name || p.title, capacity: p.capacity || '' }));
-
   return (
     <>
       <ScrollProgress />
@@ -29,7 +24,6 @@ export default async function Home() {
       <main>
         <div className="snap-section snap-hero">
           <Banner slides={slides} eyebrow={homepage.bannerEyebrow} />
-          <Ticker items={tickerItems} />
         </div>
         <div className="snap-section snap-page">
           <IntroSection
@@ -50,21 +44,15 @@ export default async function Home() {
       <Footer />
 
       <style>{`
-        html {
-          scroll-snap-type: y proximity;
-          scroll-behavior: smooth;
-        }
-
+        /* Full-screen "story" sections; normal scrolling (no scroll-snap) so the
+           footer stays reachable at the bottom of the page */
         .snap-section {
-          scroll-snap-align: start;
-        }
-
-        /* Page 1: hero + ticker fill exactly one screen */
-        .snap-hero {
           min-height: 100svh;
           display: flex;
           flex-direction: column;
         }
+
+        /* Page 1: hero fills exactly one screen */
         .snap-hero .hero {
           flex: 1 1 0%;
           height: auto;
@@ -77,16 +65,8 @@ export default async function Home() {
           flex: 1 1 auto;
           height: auto;
         }
-        .snap-hero .ticker {
-          flex: 0 0 auto;
-        }
 
         /* Story pages: fill one screen and vertically center their content */
-        .snap-page {
-          min-height: 100svh;
-          display: flex;
-          flex-direction: column;
-        }
         .snap-page > * {
           flex: 1 1 auto;
           display: flex;
@@ -98,7 +78,6 @@ export default async function Home() {
         }
 
         @media (max-width: 900px) {
-          html { scroll-snap-type: y proximity; }
           .snap-page > *,
           .snap-hero { align-items: flex-start; }
         }
