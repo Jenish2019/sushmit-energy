@@ -42,7 +42,12 @@ export default function useCollection(apiPath, { query = '', cache = 'no-store' 
       headers: options?.body ? { 'Content-Type': 'application/json' } : undefined,
       ...options,
     });
-    const json = await res.json();
+    let json;
+    try {
+      json = await res.json();
+    } catch {
+      throw new Error(res.ok ? 'Server returned an empty response. Please try again.' : `Request failed (HTTP ${res.status})`);
+    }
     if (!json.success) throw new Error(json.error || 'Request failed');
     return json.data;
   }, []);

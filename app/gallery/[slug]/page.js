@@ -19,18 +19,24 @@ export default async function AlbumDetailPage({ params }) {
   const album = await getAlbumBySlug(slug);
   if (!album) notFound();
 
+  const imgUrl = (im) => (typeof im === 'string' ? im : im?.url || im?.image || '');
+  const images = album.images || [];
+  const displayImages = album.cover
+    ? [{ url: album.cover, caption: '' }, ...images.filter((im) => imgUrl(im) !== album.cover)]
+    : images;
+
   return (
     <>
       <Header />
       <main>
-        <PageHero title={album.name} subtitle={album.description} backLink={{ href: '/gallery', label: 'All Albums' }} />
+        <PageHero title={album.name} subtitle={album.description} image={album.cover} backLink={{ href: '/gallery', label: 'All Albums' }} />
 
         <section className="section-padding">
           <div className="container">
             <div className="album-count">
-              {album.images.length} photo{(album.images.length === 1) ? '' : 's'}
+              {displayImages.length} photo{(displayImages.length === 1) ? '' : 's'}
             </div>
-            <AlbumLightbox images={album.images.length ? album.images : [{ url: album.cover, caption: '' }]} />
+            <AlbumLightbox images={displayImages} />
           </div>
         </section>
       </main>

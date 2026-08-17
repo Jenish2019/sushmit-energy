@@ -6,15 +6,20 @@ import AdminModal from '@/components/AdminModal';
 import RichTextEditor from '@/components/RichTextEditor';
 import useCollection from '@/components/useCollection';
 import UploadButton from '@/components/UploadButton';
+import Pagination from '@/components/Pagination';
+
+const PAGE_SIZE = 10;
 
 const categories = ['Press Release', 'News', 'Notice', 'Blog', 'Update', 'Energy'];
 const statuses = ['Draft', 'Published'];
 
 const toSlug = (title) => title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-export default function NewsTable({ title, description, defaultCategory = 'News', categories: allowedCategories = null, canEditCategory = true }) {
-  const query = `?category=${encodeURIComponent(defaultCategory)}`;
+export default function NewsTable({ title, description, defaultCategory = 'News', categories: allowedCategories = null, canEditCategory = true, showAll = false }) {
+  const query = showAll ? '' : `?category=${encodeURIComponent(defaultCategory)}`;
   const { items: articles, loading, error, createItem, updateItem, deleteItem } = useCollection('/api/admin/news', { query });
+  const [page, setPage] = useState(1);
+  const pageItems = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ title: '', slug: '', date: '', category: defaultCategory, status: 'Draft', excerpt: '', image: '' });
@@ -103,7 +108,7 @@ export default function NewsTable({ title, description, defaultCategory = 'News'
           <table className="news-table">
             <thead>
               <tr>
-                <th>Title</th>
+                <th>Article</th>
                 <th>Date</th>
                 <th>Category</th>
                 <th>Status</th>
@@ -111,9 +116,9 @@ export default function NewsTable({ title, description, defaultCategory = 'News'
               </tr>
             </thead>
             <tbody>
-              {articles.map((item) => (
+              {pageItems.map((item) => (
                 <tr key={item._id}>
-                  <td><div className="news-title">{item.title}</div></td>
+                  <td><div className="news-title-cell">{item.image ? <img className="news-thumb" src={item.image} alt="" /> : <span className="news-thumb news-thumb--empty" />}<div className="news-title">{item.title}</div></div></td>
                   <td className="news-date">{item.date}</td>
                   <td><span className="news-cat">{item.category}</span></td>
                   <td><span className={`news-dot ${item.status === 'Published' ? 'pub' : 'draft'}`} />{item.status}</td>
@@ -129,6 +134,9 @@ export default function NewsTable({ title, description, defaultCategory = 'News'
           </table>
         )}
         {!loading && articles.length === 0 && <div className="news-empty"><p>No articles yet.</p></div>}
+        {!loading && articles.length > 0 && (
+          <Pagination page={page} pageSize={PAGE_SIZE} total={articles.length} onChange={setPage} />
+        )}
         {error && !loading && <div className="news-error">{error}</div>}
       </div>
 
@@ -144,7 +152,7 @@ export default function NewsTable({ title, description, defaultCategory = 'News'
             <div className="nf-group"><label>Status</label><select className="nf-input" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>{statuses.map(s => <option key={s} value={s}>{s}</option>)}</select></div>
           </div>
           <div className="nf-group"><label>Excerpt</label><textarea className="nf-input" rows={2} value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} placeholder="Short summary shown in listings" /></div>
-          <div className="nf-group"><label>Cover Image URL</label><div className="nf-file-row"><input className="nf-input" value={form.image} onChange={e => setForm({ ...form, image: e.target.value })} placeholder="https://..." /><UploadButton onUploaded={(url) => setForm({ ...form, image: url })} accept="image/*" label="UploadSimple" /></div></div>
+          <div className="nf-group"><label>Cover Image URL</label><div className="nf-file-row"><input className="nf-input" value={form.image} onChange={e => setForm({ ...form, image: e.target.value })} placeholder="https://..." /><UploadButton onUploaded={(url) => setForm({ ...form, image: url })} accept="image/*" label="UploadSimple" /></div>{form.image ? <img className="nf-image-preview" src={form.image} alt="Cover preview" onError={e => { e.currentTarget.style.display = 'none'; }} /> : null}</div>
           <div className="nf-group"><label>Content</label><RichTextEditor value={content} onChange={setContent} placeholder="Write article content..." /></div>
           {formError && <div className="nf-error">{formError}</div>}
           <div className="nf-actions">
@@ -164,6 +172,9 @@ export default function NewsTable({ title, description, defaultCategory = 'News'
         .news-table td { padding: 14px 20px; font-size: 0.9rem; border-bottom: 1px solid var(--border-color); }
         .news-table tr:last-child td { border-bottom: none; }
         .news-title { font-weight: 600; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .news-title-cell { display: flex; align-items: center; gap: 12px; }
+        .news-thumb { width: 56px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0; border: 1px solid var(--border-color); }
+        .news-thumb--empty { background: var(--bg-light); }
         .news-date { color: var(--text-muted); white-space: nowrap; }
         .news-cat { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; background: var(--bg-light); color: var(--text-muted); }
         .news-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
@@ -180,6 +191,7 @@ export default function NewsTable({ title, description, defaultCategory = 'News'
         .nf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .nf-file-row { display: flex; gap: 10px; align-items: center; }
         .nf-file-row .nf-input { flex: 1; }
+        .nf-image-preview { margin-top: 10px; width: 100%; max-width: 260px; aspect-ratio: 16 / 9; object-fit: cover; border: 1px solid var(--border-color); border-radius: var(--radius-sm); }
         .nf-group { display: flex; flex-direction: column; gap: 5px; }
         .nf-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-dark); }
         .nf-input { padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; outline: none; }

@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FloppyDisk, User, ShieldCheck, Bell, Image, CircleNotch } from '@phosphor-icons/react/dist/ssr';
+import { FloppyDisk, User, ShieldCheck, Bell, Image, CircleNotch, Check } from '@phosphor-icons/react/dist/ssr';
+import UploadButton from '@/components/UploadButton';
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -9,6 +10,7 @@ export default function SettingsPage() {
     siteEmail: '',
     sitePhone: '',
     address: '',
+    pageHeroImage: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -135,7 +137,28 @@ export default function SettingsPage() {
 
               {activeTab === 'media' && (
                 <div className="form-card">
-                  <p style={{ color: 'var(--text-muted)' }}>Media configuration coming soon.</p>
+                  <div className="form-section">
+                    <h3>Page Header Background Image</h3>
+                    <p className="field-note">This image appears behind the page title on every page header. If empty, the default gradient is used.</p>
+                    <div className="image-input-row">
+                      <input className="form-input" value={settings.pageHeroImage || ''} onChange={(e) => setSettings({ ...settings, pageHeroImage: e.target.value })} placeholder="https://..." />
+                      <UploadButton onUploaded={(url) => setSettings({ ...settings, pageHeroImage: url })} accept="image/*" label="Upload" />
+                    </div>
+                    {settings.pageHeroImage && (
+                      <div className="hero-preview">
+                        <img
+                          src={settings.pageHeroImage}
+                          alt="Page header preview"
+                          onError={(e) => { e.target.style.display = 'none' }}
+                        />
+                        {settings.pageHeroImage && (
+                          <button type="button" className="hero-preview-clear" onClick={() => setSettings({ ...settings, pageHeroImage: '' })} title="Remove image">
+                            <Check size={14} /> Clear
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </>
@@ -159,6 +182,12 @@ export default function SettingsPage() {
         .settings-error { padding: 12px 20px; background: #fee2e2; color: #dc2626; border-radius: var(--radius-sm); font-size: 0.9rem; margin-top: 16px; }
         .form-card { background: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 32px; display: flex; flex-direction: column; gap: 20px; }
         .form-section h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; color: var(--text-dark); }
+        .field-note { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px; }
+        .image-input-row { display: flex; gap: 10px; align-items: flex-start; }
+        .image-input-row .form-input { flex: 1; }
+        .hero-preview { margin-top: 12px; position: relative; border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden; }
+        .hero-preview img { width: 100%; max-height: 220px; object-fit: cover; display: block; }
+        .hero-preview-clear { position: absolute; top: 10px; right: 10px; display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border: none; border-radius: var(--radius-sm); background: rgba(220,38,38,.92); color: #fff; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
         .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color 0.2s; }
         .form-input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(12,80,160,0.1); }
         .toast-success { padding: 12px 20px; background: #e6f7ee; color: var(--primary-green); border-radius: var(--radius-sm); font-size: 0.9rem; font-weight: 500; text-align: center; }

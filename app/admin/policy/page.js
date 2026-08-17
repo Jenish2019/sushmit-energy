@@ -10,7 +10,7 @@ export default function AdminPolicyPage() {
       previewUrl="/policy/"
       slug="policy"
       fields={[
-        { key: 'fileUrl', label: 'Policy Document URL (PDF)', type: 'text', placeholder: 'https://...' },
+        { key: 'fileUrl', label: 'Policy Document URL (PDF)', type: 'file', placeholder: 'https://... or /uploads/...' },
         { key: 'content', label: 'Page Content', type: 'textarea', rows: 10, initial: 'This is the privacy policy and terms of service page for Sushmit Energy. This page outlines how we collect, use, and protect your personal information...' },
       ]}
     />

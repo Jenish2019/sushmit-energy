@@ -3,22 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import {
-  List, X, Phone, MapPin, Envelope, CaretDown, PhoneCall,
-} from '@phosphor-icons/react/dist/ssr';
+import { PhoneCall, ArrowRight, X } from '@phosphor-icons/react/dist/ssr';
 import { DEFAULTS } from '../lib/defaults';
-
-const FacebookIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-  </svg>
-);
-
-const LinkedinIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
-  </svg>
-);
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -26,40 +12,36 @@ const navItems = [
     label: 'Company',
     children: [
       { label: 'About Sushmit Energy', href: '/about-us/' },
-      { label: 'Organizational Chart', href: '/organizational-chart/' },
       { label: 'Board of Directors', href: '/board-of-directors/' },
       { label: "Chairman's Message", href: '/message-of-chairman/' },
       { label: 'Management Team', href: '/our-management-team/' },
       { label: 'Investment Opportunity in Nepal', href: '/investment-oppourtunity/' },
     ],
   },
-  { label: 'Projects', href: '/projects/' },
+  { label: 'Our Project', href: '/projects/' },
   {
     label: 'Media',
     children: [
-      { label: 'Press Releases', href: '/press-releases/' },
-      { label: 'Sushmit Energy in the News', href: '/sushmit-news/' },
-      { label: 'Media Kit', href: '/media-kit/' },
-      { label: 'Blog', href: '/blog/' },
-      { label: 'Publications', href: '/publications/' },
+      { label: 'Gallery', href: '/gallery/' },
+      { label: 'News', href: '/news/' },
+      { label: 'Resources', href: '/resources/' },
     ],
   },
-  {
-    label: 'Job Board',
-    children: [
-      { label: 'Current Vacancies', href: '/current-vacancies/' },
-      { label: 'Drop Your Resume', href: '/resume/' },
-    ],
-  },
-  { label: 'Gallery', href: '/gallery/' },
   { label: 'Contact Us', href: '/contact-us/' },
+];
+
+const menuCards = [
+  { href: '/projects/', title: 'Our Project', text: 'Kunaban Khola Hydropower — 20 MW in Myagdi', img: DEFAULTS.projects[0]?.image || DEFAULTS.projects[0]?.img },
+  { href: '/news/', title: 'Latest News', text: 'Company updates and announcements', img: DEFAULTS.news?.['Press Release']?.[0]?.image },
+  { href: '/gallery/', title: 'Gallery', text: 'Our projects and people in pictures', img: DEFAULTS.galleryAlbums?.[0]?.cover },
 ];
 
 export default function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
   const [openMobileSub, setOpenMobileSub] = useState({});
   const [site, setSite] = useState(DEFAULTS.settings);
   const headerRef = useRef(null);
@@ -90,19 +72,19 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    if (drawerOpen) {
+    if (menuOpen || drawerOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
     return () => { document.body.style.overflow = ''; };
-  }, [drawerOpen]);
+  }, [menuOpen, drawerOpen]);
 
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') {
+        setMenuOpen(false);
         setDrawerOpen(false);
-        setOpenDropdown(null);
       }
     };
     window.addEventListener('keydown', onKey);
@@ -110,44 +92,14 @@ export default function Header() {
   }, []);
 
   const isActive = (href) => pathname === href || pathname.startsWith(href + '/');
+  const isHome = pathname === '/';
 
   const toggleMobileSub = (label) =>
     setOpenMobileSub((prev) => ({ ...prev, [label]: !prev[label] }));
 
   return (
     <>
-      <header ref={headerRef} className={`header ${scrolled ? 'scrolled' : ''}`}>
-        {/* Utility strip */}
-        <div className="header-utility">
-          <div className="container header-utility-inner">
-            <div className="header-utility-links">
-              <a href="/policy/">Policy</a>
-              <span className="sep">•</span>
-              <a href="/reports/">Reports</a>
-              <span className="sep">•</span>
-              <a href="/current-vacancies/">Careers</a>
-            </div>
-            <div className="header-utility-contact">
-              <span className="utility-item">
-                <Envelope size={13} weight="bold" />
-                {site.siteEmail}
-              </span>
-              <span className="utility-item">
-                <PhoneCall size={13} weight="bold" />
-                {site.sitePhone}
-              </span>
-              <div className="utility-social">
-                <a href="https://www.facebook.com/SushmitEnergy/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                  <FacebookIcon />
-                </a>
-                <a href="https://www.linkedin.com/company/sushmitcleanenergy/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                  <LinkedinIcon />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <header ref={headerRef} className={`header ${scrolled ? 'scrolled' : ''} ${isHome ? 'home-fixed' : ''} ${isHome && !scrolled ? 'transparent' : ''}`}>
         {/* Main bar */}
         <div className="header-main">
           <div className="container header-main-inner">
@@ -176,24 +128,23 @@ export default function Header() {
                           aria-expanded={openDropdown === i}
                         >
                           {item.label}
-                          <CaretDown size={13} weight="bold" className="chevron" />
                         </a>
                         <div className={`dropdown ${openDropdown === i ? 'open' : ''}`}>
                           <ul>
                             {item.children.map((child) => (
                               <li key={child.href}>
-                                <a href={child.href} className={isActive(child.href) ? 'active' : ''}>
+                                <Link href={child.href} className={isActive(child.href) ? 'active' : ''}>
                                   {child.label}
-                                </a>
+                                </Link>
                               </li>
                             ))}
                           </ul>
                         </div>
                       </>
                     ) : (
-                      <a href={item.href} className={`nav-link ${isActive(item.href) ? 'active' : ''}`}>
+                      <Link href={item.href} className={`nav-link ${isActive(item.href) ? 'active' : ''}`}>
                         {item.label}
-                      </a>
+                      </Link>
                     )}
                   </li>
                 ))}
@@ -201,22 +152,87 @@ export default function Header() {
             </nav>
 
             <div className="header-actions">
-              <a href="/contact-us/" className="btn btn-accent header-cta">
-                <PhoneCall size={17} weight="bold" />
-                <span>Get in Touch</span>
+              <a href="/contact-us/" className="header-contact-link">
+                Contact
+                <ArrowRight size={15} weight="bold" />
               </a>
+              <button
+                className="menu-toggle"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Toggle menu"
+                aria-expanded={menuOpen}
+              >
+                {menuOpen ? 'Close' : 'Menu'}
+                <span className={`menu-toggle-bars ${menuOpen ? 'open' : ''}`} aria-hidden="true">
+                  <i />
+                  <i />
+                </span>
+              </button>
               <button
                 className="mobile-toggle"
                 onClick={() => setDrawerOpen(!drawerOpen)}
-                aria-label="Toggle menu"
+                aria-label="Toggle navigation"
                 aria-expanded={drawerOpen}
               >
-                {drawerOpen ? <X size={26} weight="bold" /> : <List size={26} weight="bold" />}
+                {drawerOpen ? <X size={26} weight="bold" /> : <span className="burger" aria-hidden="true"><i /><i /><i /></span>}
               </button>
             </div>
           </div>
         </div>
       </header>
+
+      {/* Full-screen menu overlay */}
+      <div className={`menu-overlay ${menuOpen ? 'open' : ''}`} aria-hidden={!menuOpen}>
+        <div className="menu-overlay-inner container-wide">
+          <div className="menu-overlay-left">
+            <div className="menu-overlay-grid">
+              {navItems.map((item) => (
+                <div key={item.label} className={`menu-group ${openMobileSub[item.label] ? 'expanded' : ''}`}>
+                  {item.children ? (
+                    <>
+                      <button className="menu-group-title" onClick={() => toggleMobileSub(item.label)}>
+                        {item.label}
+                        <ArrowRight size={16} weight="bold" className="menu-group-arrow" />
+                      </button>
+                      <ul className="menu-group-sub">
+                        {item.children.map((child) => (
+                          <li key={child.href}>
+                            <Link href={child.href} onClick={() => setMenuOpen(false)} className={isActive(child.href) ? 'active' : ''}>
+                              {child.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : (
+                    <Link href={item.href} onClick={() => setMenuOpen(false)} className={`menu-group-title ${isActive(item.href) ? 'active' : ''}`}>
+                      {item.label}
+                      <ArrowRight size={16} weight="bold" className="menu-group-arrow" />
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="menu-overlay-contact">
+              <span>{site.sitePhone}</span>
+              <span>{site.siteEmail}</span>
+            </div>
+          </div>
+          <div className="menu-overlay-right">
+            {menuCards.filter((c) => c.img).map((card, i) => (
+              <Link key={i} href={card.href} className="menu-card" onClick={() => setMenuOpen(false)}>
+                <div className="menu-card-media">
+                  <img src={card.img} alt="" loading="lazy" />
+                </div>
+                <div className="menu-card-info">
+                  <span className="menu-card-text">{card.text}</span>
+                  <strong className="menu-card-title">{card.title}</strong>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Mobile drawer */}
       <div className={`drawer-overlay ${drawerOpen ? 'open' : ''}`} onClick={() => setDrawerOpen(false)} aria-hidden="true" />
@@ -238,164 +254,127 @@ export default function Header() {
                     aria-expanded={!!openMobileSub[item.label]}
                   >
                     <span>{item.label}</span>
-                    <CaretDown size={16} weight="bold" className={`chevron ${openMobileSub[item.label] ? 'open' : ''}`} />
+                    <ArrowRight size={15} weight="bold" className={`chevron ${openMobileSub[item.label] ? 'open' : ''}`} />
                   </button>
                   <ul className={`drawer-sub ${openMobileSub[item.label] ? 'open' : ''}`}>
                     {item.children.map((child) => (
                       <li key={child.href}>
-                        <a href={child.href} onClick={() => setDrawerOpen(false)} className={isActive(child.href) ? 'active' : ''}>{child.label}</a>
+                        <Link href={child.href} onClick={() => setDrawerOpen(false)} className={isActive(child.href) ? 'active' : ''}>{child.label}</Link>
                       </li>
                     ))}
                   </ul>
                 </>
               ) : (
-                <a href={item.href} onClick={() => setDrawerOpen(false)} className={`drawer-link ${isActive(item.href) ? 'active' : ''}`}>{item.label}</a>
+                <Link href={item.href} onClick={() => setDrawerOpen(false)} className={`drawer-link ${isActive(item.href) ? 'active' : ''}`}>{item.label}</Link>
               )}
             </li>
           ))}
         </ul>
         <div className="drawer-footer">
-          <a href="/contact-us/" className="btn btn-primary btn-block">Contact Us</a>
+          <Link href="/contact-us/" className="btn btn-dark btn-block" onClick={() => setDrawerOpen(false)}>Contact Us</Link>
           <div className="drawer-contact">
             <span><PhoneCall size={15} /> {site.sitePhone}</span>
-            <span><MapPin size={15} /> {site.address}</span>
           </div>
         </div>
       </aside>
 
       <style>{`
-        /* ---------- Utility strip ---------- */
+        /* ---------- Header shell ---------- */
         .header {
           position: sticky;
           top: 0;
           z-index: 1000;
           background: var(--bg-white);
-          transition: box-shadow .3s ease, background .3s ease;
+          border-bottom: 1px solid var(--border-color);
+          transition: box-shadow .3s ease, background .3s ease, border-color .3s ease;
         }
         .header.scrolled {
           box-shadow: var(--shadow-md);
-          background: rgba(255,255,255,.85);
-          backdrop-filter: blur(14px) saturate(1.4);
-          -webkit-backdrop-filter: blur(14px) saturate(1.4);
+          border-color: transparent;
         }
-        .header-utility {
-          background: linear-gradient(90deg, var(--primary-blue-dark), var(--primary-blue));
-          color: rgba(255,255,255,.9);
-          font-size: .78rem;
-          transition: max-height .3s ease, padding .3s ease;
+
+        /* On the homepage the header floats over the hero (blends with banner) */
+        .header.home-fixed {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
         }
-        .header.scrolled .header-utility {
-          max-height: 0;
-          padding: 0;
-          opacity: 0;
-          overflow: hidden;
+        .header.transparent {
+          background: rgb(255, 255, 255);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border-color: transparent;
+          box-shadow: none;
         }
-        .header-utility-inner {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-top: 7px;
-          padding-bottom: 7px;
-          gap: 20px;
+        .header.transparent .logo img {
+          filter: none;
         }
-        .header-utility-links,
-        .header-utility-contact {
-          display: flex;
-          align-items: center;
-          gap: 12px;
+        .header.transparent .menu-toggle {
+          background: rgba(255, 255, 255, 0.36);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
         }
-        .header-utility-links a {
-          color: rgba(255,255,255,.92);
-          transition: color .2s;
+        @media (prefers-reduced-motion: reduce) {
+          .header.transparent { transition: none; }
         }
-        .header-utility-links a:hover { color: #fff; }
-        .header-utility .sep { opacity: .4; }
-        .header-utility-contact { margin-left: auto; }
-        .utility-item {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-        }
-        .utility-social {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          padding-left: 8px;
-          border-left: 1px solid rgba(255,255,255,.25);
-        }
-        .utility-social a {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 26px;
-          height: 26px;
-          border-radius: 50%;
-          color: rgba(255,255,255,.9);
-          transition: background .2s, color .2s;
-        }
-        .utility-social a:hover { background: rgba(255,255,255,.18); color: #fff; }
 
         /* ---------- Main bar ---------- */
-        .header-main {
-          position: relative;
-        }
         .header-main-inner {
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 28px;
-          min-height: 72px;
+          min-height: 74px;
         }
-        .logo img { height: 52px; width: auto; display: block; }
+        .logo img { height: 48px; width: auto; display: block; }
 
         .desktop-nav { flex: 1; display: flex; justify-content: center; }
-        .nav-list { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; gap: 2px; }
+        .nav-list { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; gap: 4px; }
         .nav-item { position: relative; }
         .nav-link {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          padding: 10px 13px;
+          padding: 9px 13px;
+          background: none;
+          border: none;
+          cursor: pointer;
           color: var(--text-dark);
           font-family: var(--font-display), sans-serif;
-          font-size: .92rem;
-          font-weight: 600;
-          letter-spacing: .01em;
-          border-radius: 10px;
+          font-size: .9rem;
+          font-weight: 500;
+          letter-spacing: .02em;
           white-space: nowrap;
           position: relative;
-          transition: color .2s, background .2s;
+          transition: color .2s;
         }
         .nav-link::after {
           content: '';
           position: absolute;
-          left: 13px; right: 13px; bottom: 4px;
+          left: 13px; right: 13px; bottom: 2px;
           height: 2px;
-          border-radius: 2px;
           background: var(--accent);
           transform: scaleX(0);
           transform-origin: left;
-          transition: transform .25s var(--ease-out-expo);
+          transition: transform .28s var(--ease-out-expo);
         }
         .nav-link:hover { color: var(--primary-blue); }
         .nav-link:hover::after,
         .nav-link.active::after { transform: scaleX(1); }
         .nav-link.active { color: var(--primary-blue); }
-        .chevron { transition: transform .25s ease; opacity: .7; }
-        .has-dropdown:hover .chevron,
-        .has-dropdown:focus-within .chevron { transform: rotate(180deg); }
 
         .dropdown {
           position: absolute;
-          top: calc(100% + 8px);
+          top: calc(100% + 10px);
           left: 50%;
           transform: translateX(-50%) translateY(8px);
-          min-width: 240px;
+          min-width: 260px;
           background: var(--surface);
-          border: 1px solid var(--border-soft);
+          border: 1px solid var(--border-color);
           border-radius: var(--radius-md);
           box-shadow: var(--shadow-lg);
-          padding: 8px;
+          padding: 10px;
           opacity: 0;
           visibility: hidden;
           transition: opacity .22s ease, transform .22s var(--ease-out-expo), visibility .22s;
@@ -404,27 +383,95 @@ export default function Header() {
         .dropdown::before {
           content: '';
           position: absolute;
-          top: -12px; left: 50%;
+          top: -7px;
+          left: 50%;
           transform: translateX(-50%);
           border: 7px solid transparent;
           border-bottom-color: var(--surface);
+          border-top: none;
         }
         .dropdown.open { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
         .dropdown li a {
           display: flex;
           align-items: center;
+          justify-content: space-between;
           padding: 10px 12px;
-          border-radius: 8px;
+          border-radius: var(--radius-sm);
           color: var(--text-body);
           font-size: .88rem;
           font-weight: 500;
           transition: background .18s, color .18s, padding-left .18s;
         }
-        .dropdown li a:hover { background: var(--bg-soft); color: var(--primary-blue); padding-left: 16px; }
-        .dropdown li a.active { background: var(--bg-soft); color: var(--primary-blue); }
+        .dropdown li a::after {
+          content: '';
+          width: 5px; height: 5px;
+          border-radius: 50%;
+          background: var(--accent);
+          opacity: 0;
+          transition: opacity .18s;
+        }
+        .dropdown li a:hover { background: var(--bg-light); color: var(--primary-blue); padding-left: 16px; }
+        .dropdown li a:hover::after { opacity: 1; }
+        .dropdown li a.active { background: var(--bg-light); color: var(--primary-blue); }
 
-        .header-actions { display: flex; align-items: center; gap: 14px; }
-        .header-cta { padding: 11px 22px; font-size: .9rem; }
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .header-contact-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-family: var(--font-display), sans-serif;
+          font-size: .86rem;
+          font-weight: 600;
+          letter-spacing: .06em;
+          text-transform: uppercase;
+          color: var(--text-dark);
+          padding: 8px 0;
+          position: relative;
+          transition: color .2s;
+        }
+        .header-contact-link::after {
+          content: '';
+          position: absolute;
+          left: 0; right: 0; bottom: 2px;
+          height: 1px;
+          background: var(--text-dark);
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform .28s var(--ease-out-expo);
+        }
+        .header-contact-link:hover { color: var(--primary-blue); }
+        .header-contact-link:hover::after { transform: scaleX(1); }
+        .header-contact-link svg { transition: transform .25s var(--ease-out-expo); }
+        .header-contact-link:hover svg { transform: translateX(4px); }
+
+        /* Menu button (IEA style) */
+        .menu-toggle {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          background: none;
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-pill);
+          padding: 9px 16px 9px 18px;
+          cursor: pointer;
+          font-family: var(--font-display), sans-serif;
+          font-size: .82rem;
+          font-weight: 600;
+          letter-spacing: .06em;
+          text-transform: uppercase;
+          color: var(--text-dark);
+          transition: background .25s, color .25s, border-color .25s;
+        }
+        .menu-toggle:hover { background: var(--text-dark); color: #fff; border-color: var(--text-dark); }
+        .menu-toggle-bars { display: flex; flex-direction: column; gap: 4px; }
+        .menu-toggle-bars i {
+          width: 20px; height: 1.6px;
+          background: currentColor;
+          transition: transform .3s var(--ease-out-expo), opacity .2s;
+        }
+        .menu-toggle-bars.open i:first-child { transform: translateY(5.6px) rotate(45deg); }
+        .menu-toggle-bars.open i:last-child { transform: translateY(-5.6px) rotate(-45deg); }
+
         .mobile-toggle {
           display: none;
           background: none;
@@ -432,20 +479,137 @@ export default function Header() {
           cursor: pointer;
           color: var(--text-dark);
           padding: 6px;
-          border-radius: 8px;
+        }
+        .burger { display: flex; flex-direction: column; gap: 5px; width: 24px; }
+        .burger i { height: 2px; background: currentColor; border-radius: 2px; }
+
+        /* ---------- Full-screen menu overlay ---------- */
+        .menu-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 1500;
+          background: var(--bg-white);
+          overflow-y: auto;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity .38s var(--ease-out-expo), visibility .38s;
+        }
+        .menu-overlay.open { opacity: 1; visibility: visible; }
+        .menu-overlay-inner {
+          display: grid;
+          grid-template-columns: 1.1fr 1fr;
+          gap: 60px;
+          min-height: 100%;
+          padding-top: 120px;
+          padding-bottom: 60px;
+          align-items: start;
+        }
+        .menu-overlay-left {
+          border-top: 1px solid var(--border-color);
+          padding-top: 40px;
+        }
+        .menu-overlay-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 28px 44px;
+        }
+        .menu-group-title {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          text-align: left;
+          font-family: var(--font-display), sans-serif;
+          font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+          font-weight: 500;
+          color: var(--text-dark);
+          padding: 4px 0;
+          width: 100%;
+          position: relative;
+          transition: color .2s;
+        }
+        .menu-group-title:hover { color: var(--primary-blue); }
+        .menu-group-title .menu-group-arrow {
+          transition: transform .3s var(--ease-out-expo);
+          opacity: .4;
+        }
+        .menu-group-title:hover .menu-group-arrow { opacity: 1; transform: translateX(4px); }
+        .menu-group.expanded .menu-group-arrow { transform: rotate(90deg); }
+        .menu-group-sub {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height .4s var(--ease-out-expo), margin .4s var(--ease-out-expo);
+          margin: 0;
+        }
+        .menu-group.expanded .menu-group-sub { max-height: 400px; margin-top: 10px; }
+        .menu-group-sub a {
+          display: block;
+          padding: 7px 0;
+          color: var(--text-muted);
+          font-size: .95rem;
+          border-bottom: 1px dashed var(--border-soft);
+          transition: color .2s, padding-left .2s;
+        }
+        .menu-group-sub a:hover,
+        .menu-group-sub a.active { color: var(--primary-blue); padding-left: 6px; }
+        .menu-overlay-contact {
+          display: flex;
+          gap: 24px;
+          margin-top: 56px;
+          padding-top: 20px;
+          border-top: 1px solid var(--border-color);
+          font-size: .84rem;
+          color: var(--text-muted);
+          letter-spacing: .03em;
+        }
+        .menu-overlay-right {
+          display: grid;
+          gap: 16px;
+        }
+        .menu-card {
+          display: grid;
+          grid-template-columns: 120px 1fr;
+          align-items: center;
+          gap: 20px;
+          background: var(--bg-light);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-md);
+          overflow: hidden;
+          text-decoration: none;
+          transition: transform .3s var(--ease-out-expo), box-shadow .3s, border-color .3s;
+        }
+        .menu-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--line-strong, #d9d9d4); }
+        .menu-card-media { position: relative; height: 96px; overflow: hidden; }
+        .menu-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s var(--ease-out-expo); }
+        .menu-card:hover .menu-card-media img { transform: scale(1.08); }
+        .menu-card-info { padding-right: 18px; }
+        .menu-card-text {
+          display: block;
+          font-size: .76rem;
+          color: var(--text-muted);
+          margin-bottom: 4px;
+        }
+        .menu-card-title {
+          font-family: var(--font-display), sans-serif;
+          font-size: 1.05rem;
+          font-weight: 600;
+          color: var(--text-dark);
         }
 
         /* ---------- Mobile drawer ---------- */
         .drawer-overlay {
           position: fixed;
           inset: 0;
-          background: rgba(16,33,59,.5);
+          background: rgba(16, 20, 26, .5);
           backdrop-filter: blur(3px);
           -webkit-backdrop-filter: blur(3px);
           opacity: 0;
           visibility: hidden;
           transition: opacity .3s ease, visibility .3s;
-          z-index: 2000;
+          z-index: 2100;
         }
         .drawer-overlay.open { opacity: 1; visibility: visible; }
         .mobile-drawer {
@@ -454,12 +618,12 @@ export default function Header() {
           height: 100vh;
           width: min(360px, 88vw);
           background: var(--bg-white);
-          z-index: 2001;
+          z-index: 2101;
           transform: translateX(100%);
           transition: transform .32s var(--ease-out-expo);
           display: flex;
           flex-direction: column;
-          box-shadow: -20px 0 50px rgba(16,33,59,.2);
+          box-shadow: -20px 0 50px rgba(16,20,26,.2);
         }
         .mobile-drawer.open { transform: translateX(0); }
         .drawer-header {
@@ -467,15 +631,15 @@ export default function Header() {
           align-items: center;
           justify-content: space-between;
           padding: 18px 20px;
-          border-bottom: 1px solid var(--border-soft);
+          border-bottom: 1px solid var(--border-color);
         }
         .drawer-logo { height: 40px; width: auto; }
         .drawer-close {
-          background: var(--bg-soft);
+          background: var(--bg-light);
           border: none;
           cursor: pointer;
           width: 40px; height: 40px;
-          border-radius: 10px;
+          border-radius: var(--radius-md);
           display: flex; align-items: center; justify-content: center;
           color: var(--text-dark);
           transition: background .2s;
@@ -491,19 +655,19 @@ export default function Header() {
           padding: 14px 12px;
           background: none;
           border: none;
-          border-radius: 10px;
+          border-radius: var(--radius-sm);
           color: var(--text-dark);
           font-family: var(--font-display), sans-serif;
           font-size: 1rem;
-          font-weight: 600;
+          font-weight: 500;
           text-align: left;
           cursor: pointer;
           transition: background .18s, color .18s;
         }
         .drawer-link:hover,
-        .drawer-link.active { background: var(--bg-soft); color: var(--primary-blue); }
+        .drawer-link.active { background: var(--bg-light); color: var(--primary-blue); }
         .drawer-parent .chevron { transition: transform .25s ease; }
-        .drawer-parent .chevron.open { transform: rotate(180deg); }
+        .drawer-parent .chevron.open { transform: rotate(90deg); }
         .drawer-sub {
           overflow: hidden;
           max-height: 0;
@@ -516,14 +680,14 @@ export default function Header() {
           padding: 10px 12px;
           color: var(--text-body);
           font-size: .92rem;
-          border-radius: 8px;
+          border-radius: var(--radius-sm);
           transition: color .18s, background .18s;
         }
         .drawer-sub a:hover,
-        .drawer-sub a.active { color: var(--primary-blue); background: var(--bg-soft); }
+        .drawer-sub a.active { color: var(--primary-blue); background: var(--bg-light); }
         .drawer-footer {
           padding: 16px 20px;
-          border-top: 1px solid var(--border-soft);
+          border-top: 1px solid var(--border-color);
           display: flex;
           flex-direction: column;
           gap: 12px;
@@ -540,14 +704,18 @@ export default function Header() {
 
         @media (max-width: 1100px) {
           .desktop-nav { display: none; }
-          .header-cta { display: none; }
-          .header-actions { width: auto; }
+          .menu-toggle { display: none; }
+          .header-contact-link { display: none; }
           .mobile-toggle { display: flex; }
-          .header-utility-contact .utility-item:first-of-type { display: none; }
+        }
+        @media (max-width: 900px) {
+          .menu-overlay-inner { grid-template-columns: 1fr; padding-top: 110px; }
+          .menu-overlay-right { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 560px) {
-          .header-utility-links span.sep { display: none; }
-          .header-utility-contact .utility-item { display: none; }
+          .menu-overlay-grid { grid-template-columns: 1fr; gap: 20px; }
+          .menu-overlay-right { grid-template-columns: 1fr; }
+          .menu-overlay-contact { flex-direction: column; gap: 8px; }
         }
       `}</style>
     </>

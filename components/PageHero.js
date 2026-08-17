@@ -1,19 +1,38 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from '@phosphor-icons/react/dist/ssr';
 import Reveal from './Reveal';
 
-export default function PageHero({ title, subtitle, backLink }) {
+export default function PageHero({ title, subtitle, backLink, image }) {
+  const [heroImage, setHeroImage] = useState(image || '');
+
+  useEffect(() => {
+    if (image) return;
+    let active = true;
+    fetch('/api/public/settings', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((json) => {
+        if (active && json.success) setHeroImage(json.data.settings?.pageHeroImage || '');
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [image]);
+
   return (
     <section className="page-hero">
-      <div className="page-hero-grid" aria-hidden="true" />
-      <div className="page-hero-glow" aria-hidden="true" />
+      {heroImage && (
+        <>
+          <div className="page-hero-bg" style={{ backgroundImage: `url(${heroImage})` }} />
+          <div className="page-hero-veil" />
+        </>
+      )}
       <div className="container page-hero-inner">
         <Reveal>
           {backLink && (
             <Link href={backLink.href} className="page-hero-back">
-              <ArrowLeft size={16} weight="bold" />
+              <ArrowLeft size={15} weight="bold" />
               {backLink.label}
             </Link>
           )}
@@ -26,92 +45,92 @@ export default function PageHero({ title, subtitle, backLink }) {
       <style>{`
         .page-hero {
           position: relative;
-          padding: 96px 0 84px;
-          background: linear-gradient(160deg, #071b38 0%, #0a2e5c 55%, var(--primary-blue) 100%);
-          color: #fff;
+          padding: 96px 0 76px;
+          background: linear-gradient(180deg, #eef4fb 0%, #f6f7f5 100%);
+          border-bottom: 1px solid var(--border-color);
+          color: var(--text-dark);
           overflow: hidden;
-          text-align: center;
+        }
+        .page-hero::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 3px;
+          background: var(--grad-brand);
+          opacity: .9;
+          z-index: 3;
         }
         .page-hero::after {
           content: '';
           position: absolute;
-          left: 0; right: 0; bottom: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, var(--accent), transparent);
-          opacity: .5;
-        }
-        .page-hero-grid {
-          position: absolute;
-          inset: 0;
-          background-image:
-            linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
-          background-size: 56px 56px;
-          mask-image: radial-gradient(800px 400px at 50% 0%, #000 30%, transparent 75%);
-          -webkit-mask-image: radial-gradient(800px 400px at 50% 0%, #000 30%, transparent 75%);
+          right: -120px;
+          top: -120px;
+          width: 380px;
+          height: 380px;
+          border-radius: 50%;
+          background: radial-gradient(closest-side, rgba(10,77,163,.1), transparent);
           pointer-events: none;
         }
-        .page-hero-glow {
+        .page-hero-inner { position: relative; z-index: 2; max-width: 900px; }
+        .page-hero-bg {
           position: absolute;
           inset: 0;
-          background:
-            radial-gradient(520px 260px at 12% 15%, rgba(15,138,67,.28), transparent 60%),
-            radial-gradient(520px 260px at 88% 20%, rgba(240,165,0,.18), transparent 60%);
-          pointer-events: none;
+          z-index: 0;
+          background-size: cover;
+          background-position: center;
+          transform: scale(1.02);
         }
-        .page-hero-inner { position: relative; z-index: 2; }
+        .page-hero-veil {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          background: linear-gradient(180deg, rgba(238,244,251,.82) 0%, rgba(246,247,245,.9) 100%);
+        }
         .page-hero-back {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          margin-bottom: 26px;
-          color: rgba(255,255,255,.75);
-          font-size: .88rem;
+          margin-bottom: 34px;
+          color: var(--text-muted);
+          font-size: .84rem;
           font-weight: 500;
-          padding: 8px 16px;
-          border: 1px solid rgba(255,255,255,.2);
-          border-radius: 999px;
-          background: rgba(255,255,255,.06);
-          backdrop-filter: blur(6px);
-          transition: background .2s, color .2s, transform .2s var(--ease-out-expo);
+          transition: color .2s, transform .2s var(--ease-out-expo);
         }
-        .page-hero-back:hover { background: rgba(255,255,255,.14); color: #fff; transform: translateY(-2px); }
+        .page-hero-back:hover { color: var(--primary-blue); transform: translateX(-3px); }
         .page-hero-eyebrow {
           display: inline-flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
           font-family: var(--font-display), sans-serif;
-          font-size: .78rem;
+          font-size: .76rem;
           font-weight: 600;
           letter-spacing: .22em;
           text-transform: uppercase;
-          color: var(--accent);
-          margin-bottom: 16px;
+          color: var(--primary-green);
+          margin-bottom: 20px;
         }
         .page-hero-eyebrow::before {
           content: '';
           width: 28px;
-          height: 2px;
-          border-radius: 2px;
+          height: 1px;
           background: var(--accent);
         }
         .page-hero h1 {
-          font-size: clamp(2rem, 4.6vw, 3.2rem);
-          font-weight: 800;
-          letter-spacing: -.02em;
-          line-height: 1.1;
-          margin-bottom: 16px;
+          font-size: clamp(2rem, 4.4vw, 3.4rem);
+          font-weight: 500;
+          letter-spacing: -0.02em;
+          line-height: 1.05;
+          margin-bottom: 20px;
         }
         .page-hero p {
           font-size: 1.1rem;
-          opacity: .82;
+          color: var(--text-muted);
           max-width: 640px;
-          margin: 0 auto;
-          line-height: 1.6;
+          line-height: 1.7;
         }
         @media (max-width: 768px) {
-          .page-hero { padding: 72px 0 60px; }
-          .page-hero h1 { font-size: 1.8rem; }
+          .page-hero { padding: 68px 0 52px; }
+          .page-hero h1 { font-size: 1.9rem; }
           .page-hero p { font-size: 1rem; }
         }
       `}</style>

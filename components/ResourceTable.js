@@ -5,6 +5,9 @@ import { Download, FileText, CircleNotch, Plus, Trash, ArrowSquareOut } from '@p
 import AdminModal from '@/components/AdminModal';
 import useCollection from '@/components/useCollection';
 import UploadButton from '@/components/UploadButton';
+import Pagination from '@/components/Pagination';
+
+const PAGE_SIZE = 10;
 
 export default function ResourceTable({
   apiPath,
@@ -17,6 +20,8 @@ export default function ResourceTable({
 }) {
   const query = group ? `?group=${encodeURIComponent(group)}` : '';
   const { items, loading, error, createItem, updateItem, deleteItem } = useCollection(apiPath, { query });
+  const [page, setPage] = useState(1);
+  const pageItems = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ title: '', type: typeOptions[0], date: '', fileUrl: '', description: '', size: '' });
@@ -75,7 +80,7 @@ export default function ResourceTable({
         ) : (
           <table className="data-table">
             <thead><tr><th>Title</th><th>Type</th><th>Date</th><th>File</th><th>Actions</th></tr></thead>
-            <tbody>{items.map(item => (
+            <tbody>{pageItems.map(item => (
               <tr key={item._id}>
                 <td><div className="td-title"><FileText size={16} /> {item.title}</div></td>
                 <td><span className="type-badge">{item.type}</span></td>
@@ -94,6 +99,9 @@ export default function ResourceTable({
           </table>
         )}
         {!loading && items.length === 0 && <div className="empty-state"><p>No items yet.</p></div>}
+        {!loading && items.length > 0 && (
+          <Pagination page={page} pageSize={PAGE_SIZE} total={items.length} onChange={setPage} />
+        )}
         {error && !loading && <div className="res-error">{error}</div>}
       </div>
       <AdminModal open={modalOpen} onClose={() => setModalOpen(false)} title={editingId ? 'Edit Item' : 'Add Item'}>

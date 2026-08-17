@@ -1,15 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { CaretLeft, CaretRight, ArrowDown } from '@phosphor-icons/react/dist/ssr';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { ArrowRight, ArrowDown } from '@phosphor-icons/react/dist/ssr';
 import { DEFAULTS } from '../lib/defaults';
 
 export default function Banner({ slides = DEFAULTS.bannerSlides, eyebrow = DEFAULTS.homepage.bannerEyebrow }) {
   const [current, setCurrent] = useState(0);
-
-  const prev = useCallback(() => {
-    setCurrent((p) => (p - 1 + slides.length) % slides.length);
-  }, [slides.length]);
+  const [offset, setOffset] = useState(0);
+  const heroRef = useRef(null);
 
   const next = useCallback(() => {
     setCurrent((p) => (p + 1) % slides.length);
@@ -17,236 +15,292 @@ export default function Banner({ slides = DEFAULTS.bannerSlides, eyebrow = DEFAU
 
   useEffect(() => {
     if (slides.length <= 1) return;
-    const t = setInterval(next, 6500);
+    const t = setInterval(next, 7000);
     return () => clearInterval(t);
   }, [next, slides.length]);
 
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        setOffset(window.scrollY);
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  const parallax = Math.min(offset * 0.22, 320);
+  const fade = Math.max(0, 1 - offset / 800);
+
   return (
-    <section className="banner">
-      <div className="banner-slides">
+    <section ref={heroRef} className="hero" id="top">
+      <div className="hero-slides">
         {slides.map((slide, i) => (
           <div
             key={i}
-            className={`banner-slide ${i === current ? 'active' : ''}`}
-            style={{ backgroundImage: `url(${slide.img})` }}
+            className={`hero-slide ${i === current ? 'active' : ''}`}
+            style={{
+              backgroundImage: `url(${slide.img})`,
+              transform: `translateY(${i === current ? parallax : 0}px)`,
+            }}
           >
-            <div className="banner-overlay" />
-            <div className="banner-content">
-              <span className="banner-eyebrow">{eyebrow}</span>
-              <h1 className="banner-title">{slide.title}</h1>
-              <div className="banner-cta-row">
-                <a href="/about-us/" className="btn btn-accent banner-cta">
-                  Learn More
-                </a>
-                <a href="/projects/" className="btn btn-outline-light">Our Projects</a>
-              </div>
-            </div>
+            <div className="hero-veil" />
+            <div className="hero-top-fade" />
           </div>
         ))}
       </div>
 
-      <button className="banner-arrow banner-arrow-left" onClick={prev} aria-label="Previous slide">
-        <CaretLeft size={24} weight="bold" />
-      </button>
-      <button className="banner-arrow banner-arrow-right" onClick={next} aria-label="Next slide">
-        <CaretRight size={24} weight="bold" />
-      </button>
+      <div className="hero-content" style={{ opacity: fade }}>
+        <div className="container">
+          <span className="hero-kicker">{eyebrow}</span>
+          <h1 className="hero-title">{slides[current]?.title}</h1>
+          <div className="hero-cta-row">
+            <a href="/about-us/" className="hero-link">
+              Learn More <ArrowRight size={17} weight="bold" />
+            </a>
+            <a href="/projects/" className="hero-link hero-link--light">
+              Our Project <ArrowRight size={17} weight="bold" />
+            </a>
+          </div>
+        </div>
+      </div>
 
-      <div className="banner-progress" aria-hidden="true">
+      <div className="hero-caption" style={{ opacity: fade }}>
+        <div className="container">
+          <span className="hero-caption-label">{eyebrow}</span>
+          <span className="hero-caption-sep">/</span>
+          <span className="hero-caption-count">
+            {String(current + 1).padStart(2, '0')} — {String(slides.length).padStart(2, '0')}
+          </span>
+        </div>
+      </div>
+
+      <div className="hero-progress" aria-hidden="true">
         {slides.map((_, i) => (
-          <span key={i} className={`progress-bar ${i === current ? 'active' : ''}`} />
+          <span key={i} className={`hero-progress-bar ${i === current ? 'active' : ''}`} />
         ))}
       </div>
 
-      <div className="banner-dots">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            className={`dot ${i === current ? 'active' : ''}`}
-            onClick={() => setCurrent(i)}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
-
-      <a href="#intro" className="banner-scroll" aria-label="Scroll down">
-        <ArrowDown size={20} weight="bold" />
-      </a>
+      <button className="hero-scroll" onClick={() => document.querySelector('#intro')?.scrollIntoView({ behavior: 'smooth' })} aria-label="Scroll to intro">
+        <span>Scroll</span>
+        <ArrowDown size={15} weight="bold" />
+      </button>
 
       <style>{`
-        .banner {
+        .hero {
           position: relative;
-          height: 86vh;
-          min-height: 560px;
-          max-height: 780px;
+          height: 92vh;
+          min-height: 600px;
+          max-height: 900px;
           overflow: hidden;
-          background: #051024;
+          background: var(--bg-dark);
         }
-        .banner-slides { position: relative; height: 100%; }
-        .banner-slide {
+        .hero-slides { position: absolute; inset: 0; }
+        .hero-slide {
           position: absolute;
           inset: 0;
           background-size: cover;
           background-position: center;
           opacity: 0;
-          transition: opacity .9s ease;
+          transition: opacity 1s ease;
           will-change: transform, opacity;
         }
-        .banner-slide.active {
-          opacity: 1;
-          animation: kenburns 9s ease-out forwards;
+        .hero-slide.active { opacity: 1; animation: herozoom 10s ease-out forwards; }
+        @keyframes herozoom {
+          0% { transform: scale(1.02) translateY(0); }
+          100% { transform: scale(1.12) translateY(0); }
         }
-        @keyframes kenburns {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.08); }
-        }
-        .banner-overlay {
+        .hero-veil {
           position: absolute;
           inset: 0;
           background:
-            linear-gradient(180deg, rgba(5,16,36,.45) 0%, rgba(5,16,36,.55) 50%, rgba(5,16,36,.85) 100%),
-            linear-gradient(120deg, rgba(12,80,160,.55), rgba(15,138,67,.35));
+            linear-gradient(180deg, rgba(6,28,58,.34) 0%, rgba(6,28,58,.2) 42%, rgba(4,24,34,.78) 100%),
+            linear-gradient(115deg, rgba(10,77,163,.42) 0%, rgba(12,60,110,.22) 48%, rgba(15,122,68,.34) 100%);
         }
-        .banner-content {
+        /* Light fade behind the transparent navbar so nav text stays readable */
+        .hero-top-fade {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 160px;
+          z-index: 3;
+          background: linear-gradient(180deg, rgba(247,250,253,.68) 0%, rgba(247,250,253,.28) 55%, rgba(247,250,253,0) 100%);
+          pointer-events: none;
+        }
+
+        .hero-content {
           position: relative;
           z-index: 2;
           height: 100%;
           display: flex;
           flex-direction: column;
           justify-content: center;
-          align-items: center;
-          text-align: center;
-          padding: 0 24px;
-          max-width: 860px;
-          margin: 0 auto;
+          will-change: opacity;
         }
-        .banner-eyebrow {
+        .hero-kicker {
+          display: inline-flex;
+          align-items: center;
+          gap: 14px;
           font-family: var(--font-display), sans-serif;
-          font-size: .8rem;
+          font-size: .78rem;
           font-weight: 600;
-          letter-spacing: .22em;
+          letter-spacing: .24em;
           text-transform: uppercase;
           color: rgba(255,255,255,.85);
-          background: rgba(255,255,255,.14);
-          backdrop-filter: blur(6px);
-          border: 1px solid rgba(255,255,255,.22);
-          padding: 8px 18px;
-          border-radius: 999px;
-          margin-bottom: 26px;
-          animation: rise .7s var(--ease-out-expo) both;
+          margin-bottom: 28px;
+          animation: rise .8s var(--ease-out-expo) both;
         }
-        .banner-title {
-          font-size: clamp(2.1rem, 5vw, 3.6rem);
-          font-weight: 800;
-          color: white;
-          line-height: 1.15;
-          margin-bottom: 32px;
-          letter-spacing: -.02em;
-          text-shadow: 0 4px 26px rgba(0,0,0,.4);
-          animation: rise .8s .08s var(--ease-out-expo) both;
+        .hero-kicker::before {
+          content: '';
+          width: 34px;
+          height: 1px;
+          background: var(--accent-bright);
         }
-        .banner-cta-row {
+        .hero-title {
+          font-size: clamp(2.4rem, 5.4vw, 4.6rem);
+          font-weight: 500;
+          color: #fff;
+          line-height: 1.06;
+          letter-spacing: -0.02em;
+          max-width: 15ch;
+          margin: 0 0 40px;
+          text-shadow: 0 3px 30px rgba(0,0,0,.45);
+          animation: rise .9s .1s var(--ease-out-expo) both;
+        }
+        .hero-cta-row {
           display: flex;
-          gap: 14px;
+          gap: 34px;
           flex-wrap: wrap;
-          justify-content: center;
-          animation: rise .8s .18s var(--ease-out-expo) both;
+          animation: rise .9s .2s var(--ease-out-expo) both;
         }
-        .banner-cta { font-size: 1rem; padding: 15px 34px; }
+        .hero-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          font-family: var(--font-display), sans-serif;
+          font-size: .86rem;
+          font-weight: 600;
+          letter-spacing: .08em;
+          text-transform: uppercase;
+          color: #fff;
+          padding-bottom: 5px;
+          position: relative;
+          transition: color .2s;
+        }
+        .hero-link::after {
+          content: '';
+          position: absolute;
+          left: 0; bottom: 0;
+          width: 100%;
+          height: 1px;
+          background: var(--accent-bright);
+          transform: scaleX(1);
+          transform-origin: left;
+          transition: transform .3s var(--ease-out-expo), background .2s;
+        }
+        .hero-link svg { transition: transform .25s var(--ease-out-expo); }
+        .hero-link:hover { color: var(--accent-bright); }
+        .hero-link:hover::after { transform: scaleX(.45); }
+        .hero-link:hover svg { transform: translateX(4px); }
+        .hero-link--light { color: rgba(255,255,255,.78); }
+        .hero-link--light::after { background: rgba(255,255,255,.4); }
+        .hero-link--light:hover { color: #fff; }
+
         @keyframes rise {
-          from { opacity: 0; transform: translateY(26px); }
+          from { opacity: 0; transform: translateY(28px); }
           to { opacity: 1; transform: translateY(0); }
         }
 
-        .banner-arrow {
+        .hero-caption {
           position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          z-index: 4;
-          background: rgba(255,255,255,.12);
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(255,255,255,.22);
-          color: white;
-          width: 50px; height: 50px;
-          border-radius: 16px;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer;
-          transition: background .25s, transform .25s var(--ease-out-back), border-color .25s;
+          left: 0; right: 0;
+          bottom: 34px;
+          z-index: 3;
+          will-change: opacity;
         }
-        .banner-arrow:hover { background: var(--accent); border-color: var(--accent); color: #241a00; transform: translateY(-50%) scale(1.06); }
-        .banner-arrow-left { left: 24px; }
-        .banner-arrow-right { right: 24px; }
-
-        .banner-progress {
-          position: absolute;
-          bottom: 32px;
-          right: 24px;
-          z-index: 4;
+        .hero-caption .container {
           display: flex;
-          gap: 5px;
+          align-items: center;
+          gap: 14px;
+          color: rgba(255,255,255,.66);
+          font-size: .76rem;
+          letter-spacing: .08em;
+          text-transform: uppercase;
         }
-        .progress-bar {
-          width: 30px; height: 3px;
-          border-radius: 2px;
-          background: rgba(255,255,255,.3);
-          overflow: hidden;
+        .hero-caption-label { color: rgba(255,255,255,.85); }
+        .hero-caption-sep { color: var(--accent-bright); }
+
+        .hero-progress {
+          position: absolute;
+          bottom: 0;
+          left: 0; right: 0;
+          z-index: 3;
+          display: flex;
+          gap: 0;
+          height: 3px;
+        }
+        .hero-progress-bar {
+          flex: 1;
+          background: rgba(255,255,255,.18);
           position: relative;
+          overflow: hidden;
         }
-        .progress-bar.active::after {
+        .hero-progress-bar.active::after {
           content: '';
-          position: absolute; inset: 0;
-          background: var(--accent);
+          position: absolute;
+          inset: 0;
+          background: var(--accent-bright);
           transform-origin: left;
-          animation: progress 6.5s linear forwards;
+          animation: progress 7s linear forwards;
         }
         @keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
-        .banner-dots {
+        .hero-scroll {
           position: absolute;
-          bottom: 26px;
-          left: 50%;
-          transform: translateX(-50%);
+          right: 34px;
+          bottom: 90px;
           z-index: 4;
-          display: flex;
-          gap: 8px;
-        }
-        .dot {
-          width: 9px; height: 9px;
-          border-radius: 50%;
+          display: inline-flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          background: none;
           border: none;
-          background: rgba(255,255,255,.4);
           cursor: pointer;
-          transition: all .3s var(--ease-out-back);
+          color: rgba(255,255,255,.7);
+          font-family: var(--font-display), sans-serif;
+          font-size: .7rem;
+          letter-spacing: .2em;
+          text-transform: uppercase;
+          writing-mode: vertical-rl;
+          transition: color .2s;
         }
-        .dot.active { background: var(--accent); transform: scale(1.5); }
-
-        .banner-scroll {
-          position: absolute;
-          bottom: 22px;
-          left: 24px;
-          z-index: 4;
-          color: rgba(255,255,255,.8);
-          animation: bounce 2.2s infinite;
-        }
-        @keyframes bounce {
-          0%,100% { transform: translateY(0); }
-          50% { transform: translateY(6px); }
+        .hero-scroll svg { animation: dropline 2s ease-in-out infinite; }
+        .hero-scroll:hover { color: #fff; }
+        @keyframes dropline {
+          0%,100% { transform: translateY(0); opacity: .6; }
+          50% { transform: translateY(8px); opacity: 1; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .banner-slide.active { animation: none; }
-          .progress-bar.active::after { animation: none; }
-          .banner-eyebrow, .banner-title, .banner-cta-row { animation: none; opacity: 1; }
+          .hero-slide.active { animation: none; }
+          .hero-progress-bar.active::after { animation: none; }
+          .hero-kicker, .hero-title, .hero-cta-row { animation: none; opacity: 1; }
+          .hero-scroll svg { animation: none; }
         }
 
         @media (max-width: 768px) {
-          .banner { min-height: 460px; max-height: 560px; height: 74vh; }
-          .banner-arrow { width: 40px; height: 40px; border-radius: 12px; }
-          .banner-arrow-left { left: 12px; }
-          .banner-arrow-right { right: 12px; }
-          .banner-eyebrow { margin-bottom: 18px; }
-          .banner-scroll { display: none; }
-          .banner-progress { right: 14px; }
+          .hero { height: 80vh; min-height: 500px; max-height: 680px; }
+          .hero-title { font-size: 2rem; }
+          .hero-caption { bottom: 60px; }
+          .hero-scroll { display: none; }
+          .hero-caption-count { display: none; }
         }
       `}</style>
     </section>

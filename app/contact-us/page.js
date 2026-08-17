@@ -13,7 +13,7 @@ const DEFAULT_CONTACT = {
 };
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -109,6 +109,15 @@ export default function ContactPage() {
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
                         required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <input
+                        type="tel"
+                        placeholder="Phone (optional)"
+                        className="form-input"
+                        value={form.phone}
+                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       />
                     </div>
                     <div className="form-group">

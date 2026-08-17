@@ -6,7 +6,7 @@ import AdminModal from '@/components/AdminModal';
 import useCollection from '@/components/useCollection';
 import UploadButton from '@/components/UploadButton';
 
-const emptyForm = { name: '', desc: '', cover: '' };
+const emptyForm = { name: '', desc: '', cover: '', images: [] };
 const toSlug = (name) => String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
 export default function GalleryPage() {
@@ -18,15 +18,29 @@ export default function GalleryPage() {
   const [submitting, setSubmitting] = useState(false);
   const [uploadingAlbum, setUploadingAlbum] = useState(null);
   const [albumError, setAlbumError] = useState(null);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
 
   const uploadFile = async (file, folder) => {
     const body = new FormData();
     body.append('file', file);
     body.append('folder', folder);
     const res = await fetch('/api/admin/upload', { method: 'POST', body, cache: 'no-store' });
-    const json = await res.json();
+    let json;
+    try {
+      json = await res.json();
+    } catch {
+      throw new Error(res.ok ? 'Upload returned an empty response. Please try again.' : `Upload failed (HTTP ${res.status})`);
+    }
     if (!json.success) throw new Error(json.error || 'UploadSimple failed');
     return json.data.url;
+  };
+
+  const uploadFiles = async (fileList) => {
+    const files = Array.from(fileList);
+    if (!files.length) return [];
+    const folder = `gallery/${toSlug(form.name) || 'album'}`;
+    const urls = await Promise.all(files.map((f) => uploadFile(f, folder)));
+    return urls;
   };
 
   const handleAlbumPhotos = async (album, fileList) => {
@@ -38,12 +52,32 @@ export default function GalleryPage() {
     try {
       const urls = await Promise.all(files.map((f) => uploadFile(f, folder)));
       const images = [...(album.images || []), ...urls];
-      await updateItem(album._id, { name: album.name, description: album.description || '', cover: album.cover || '', images });
+      await updateItem(album._id, { name: album.name, slug: toSlug(album.name), description: album.description || '', cover: album.cover || '', images });
     } catch (err) {
       setAlbumError(err.message);
     } finally {
       setUploadingAlbum(null);
     }
+  };
+
+  const handleModalPhotos = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setUploadingPhotos(true);
+    setFormError(null);
+    try {
+      const urls = await uploadFiles(files);
+      setForm((prev) => ({ ...prev, images: [...(prev.images || []), ...urls] }));
+    } catch (err) {
+      setFormError(err.message);
+    } finally {
+      setUploadingPhotos(false);
+      e.target.value = '';
+    }
+  };
+
+  const removeModalImage = (index) => {
+    setForm((prev) => ({ ...prev, images: (prev.images || []).filter((_, i) => i !== index) }));
   };
 
   const openAdd = () => {
@@ -55,7 +89,7 @@ export default function GalleryPage() {
 
   const openEdit = (album) => {
     setEditingId(album._id);
-    setForm({ name: album.name || '', desc: album.description || '', cover: album.cover || '' });
+    setForm({ name: album.name || '', desc: album.description || '', cover: album.cover || '', images: [...(album.images || [])] });
     setFormError(null);
     setModalOpen(true);
   };
@@ -74,7 +108,7 @@ export default function GalleryPage() {
     if (!form.name.trim()) return;
     setSubmitting(true);
     setFormError(null);
-    const payload = { name: form.name.trim(), description: form.desc, cover: form.cover };
+    const payload = { name: form.name.trim(), slug: toSlug(form.name), description: form.desc, cover: form.cover, images: form.images || [] };
     try {
       if (editingId) await updateItem(editingId, payload);
       else await createItem(payload);
@@ -151,6 +185,23 @@ export default function GalleryPage() {
               {form.cover && <div className="cover-sm"><img src={form.cover} alt="preview" onError={e => e.target.style.display = 'none'} /></div>}
             </div>
           </div>
+          <div className="form-group">
+            <label>Photos <span className="field-hint">(select multiple images)</span></label>
+            <label className="btn btn-outline gallery-multi-upload">
+              {uploadingPhotos ? <><CircleNotch size={16} className="spin" /> Uploading...</> : <><Plus size={16} /> Upload Photos</>}
+              <input type="file" accept="image/*" multiple style={{ display: 'none' }} disabled={uploadingPhotos} onChange={handleModalPhotos} />
+            </label>
+            {(form.images || []).length > 0 && (
+              <div className="album-photo-grid">
+                {(form.images || []).map((img, i) => (
+                  <div className="album-photo-thumb" key={i}>
+                    <img src={img.url || img.image || img} alt={`Photo ${i + 1}`} onError={e => e.target.style.display = 'none'} />
+                    <button type="button" className="photo-remove" title="Remove" onClick={() => removeModalImage(i)}>×</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           {formError && <div className="gallery-form-error">{formError}</div>}
           <div className="modal-actions">
             <button type="button" className="btn btn-outline" onClick={() => setModalOpen(false)}>Cancel</button>
@@ -194,6 +245,12 @@ export default function GalleryPage() {
         .cover-row .form-input { flex: 1; }
         .cover-sm { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); flex-shrink: 0; }
         .cover-sm img { width: 100%; height: 100%; object-fit: cover; }
+        .field-hint { font-weight: 400; color: var(--text-light); font-size: 0.8rem; }
+        .gallery-multi-upload { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+        .album-photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+        .album-photo-thumb { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); background: var(--bg-light); }
+        .album-photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-remove { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border: none; border-radius: 50%; background: rgba(220,38,38,.92); color: #fff; font-size: 0.95rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 8px; }
         .spin { animation: spin 0.9s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }

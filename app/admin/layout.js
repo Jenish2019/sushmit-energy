@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   SquaresFour, FileText, Users, ChatCircle, Briefcase,
-  TrendUp, FolderOpen, Newspaper, Globe, Package, BookOpen,
+  TrendUp, FolderOpen, Newspaper, Globe, Package,
   Image, Envelope, ShieldCheck, ChartBar, Gear, SignOut, List, X,
-  CaretDown, Buildings, GitBranch, NotePencil, HouseSimple
+  CaretDown, Buildings, HouseSimple
 } from '@phosphor-icons/react/dist/ssr';
 
 const navItems = [
@@ -17,7 +17,6 @@ const navItems = [
     label: 'Company', icon: Buildings,
     children: [
       { href: '/admin/company/about', label: 'About Us', icon: FileText },
-      { href: '/admin/company/org-chart', label: 'Organizational Chart', icon: GitBranch },
       { href: '/admin/company/board', label: 'Board of Directors', icon: Users },
       { href: '/admin/company/chairman', label: "Chairman's Message", icon: ChatCircle },
       { href: '/admin/company/management', label: 'Management Team', icon: Briefcase },
@@ -28,18 +27,15 @@ const navItems = [
   {
     label: 'Media', icon: Globe,
     children: [
-      { href: '/admin/media/press-releases', label: 'Press Releases', icon: Newspaper },
-      { href: '/admin/media/news', label: 'Sushmit News', icon: Newspaper },
-      { href: '/admin/media/media-kit', label: 'Media Kit', icon: Package },
-      { href: '/admin/media/blog', label: 'Blog', icon: NotePencil },
-      { href: '/admin/media/publications', label: 'Publications', icon: BookOpen },
+      { href: '/admin/media/news', label: 'News', icon: Newspaper },
+      { href: '/admin/media/media-kit', label: 'Resources', icon: Package },
     ],
   },
   { href: '/admin/gallery', label: 'Gallery', icon: Image },
+  { href: '/admin/messages', label: 'Messages', icon: ChatCircle },
   { href: '/admin/contact', label: 'Contact Us', icon: Envelope },
   { href: '/admin/policy', label: 'Policy', icon: ShieldCheck },
   { href: '/admin/reports', label: 'Reports', icon: ChartBar },
-  { href: '/admin/jobs', label: 'Job Board', icon: Briefcase },
   { href: '/admin/settings', label: 'Settings', icon: Gear },
 ];
 

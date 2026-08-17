@@ -2,12 +2,12 @@
 
 import ResourceTable from '@/components/ResourceTable';
 
-export default function AdminMediaKitPage() {
+export default function AdminResourcesPage() {
   return (
     <ResourceTable
       apiPath="/api/admin/media"
-      title="Media Kit"
-      description="Manage downloadable resources & brand assets"
+      title="Resources"
+      description="Manage downloadable resources, media assets & publications"
       addLabel="Add Resource"
       group="media-kit"
       typeOptions={['PDF', 'ZIP', 'DOC', 'Image']}

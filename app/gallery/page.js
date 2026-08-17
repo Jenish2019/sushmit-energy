@@ -15,19 +15,22 @@ export default async function GalleryPage() {
       <main>
         <PageHero title="Gallery" subtitle="Photos from our projects and operations" />
 
-        <section className="section-padding">
+        <section className="gallery-section">
           <div className="container">
             <div className="gallery-grid">
               {albums.map((album, i) => (
                 <a key={i} href={album.link} className="gallery-card">
                   <div className="gallery-img">
-                    <img src={album.img} alt={album.title} />
-                    <div className="gallery-hover">
-                      <ArrowUpRight size={28} />
-                    </div>
+                    {album.img ? <img src={album.img} alt={album.title} loading="lazy" /> : (
+                      <div className="gallery-img-placeholder"><ArrowUpRight size={30} /></div>
+                    )}
+                    <span className="gallery-arrow" aria-hidden="true">
+                      <ArrowUpRight size={22} weight="bold" />
+                    </span>
                   </div>
                   <div className="gallery-title-bar">
                     <h3>{album.title}</h3>
+                    <span className="gallery-open">Open album</span>
                   </div>
                 </a>
               ))}
@@ -38,58 +41,80 @@ export default async function GalleryPage() {
       <Footer />
 
       <style>{`
+        .gallery-section { padding: 90px 0 120px; background: var(--bg-white); }
         .gallery-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-          gap: 30px;
+          grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+          gap: 28px;
         }
         .gallery-card {
           display: block;
-          border-radius: var(--radius-md);
-          overflow: hidden;
-          box-shadow: var(--shadow-sm);
-          border: 1px solid var(--border-color);
-          transition: transform 0.3s, box-shadow 0.3s;
           text-decoration: none;
+          border-top: 1px solid var(--border-color);
+          padding-top: 18px;
+          transition: border-color .3s;
         }
-        .gallery-card:hover {
-          transform: translateY(-4px);
-          box-shadow: var(--shadow-lg);
-        }
+        .gallery-card:hover { border-color: var(--text-dark); }
         .gallery-img {
           position: relative;
-          height: 260px;
+          aspect-ratio: 4 / 3;
           overflow: hidden;
+          background: var(--bg-light);
         }
         .gallery-img img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.5s;
+          transition: transform .8s var(--ease-out-expo);
         }
-        .gallery-card:hover .gallery-img img { transform: scale(1.08); }
-        .gallery-hover {
-          position: absolute;
-          inset: 0;
-          background: rgba(12,80,160,0.6);
+        .gallery-img-placeholder {
+          width: 100%;
+          height: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: white;
-          opacity: 0;
-          transition: opacity 0.3s;
+          color: var(--text-muted);
+          background: var(--bg-light);
         }
-        .gallery-card:hover .gallery-hover { opacity: 1; }
+        .gallery-card:hover .gallery-img img { transform: scale(1.06); }
+        .gallery-arrow {
+          position: absolute;
+          right: 14px; bottom: 14px;
+          width: 42px; height: 42px;
+          border-radius: 50%;
+          background: var(--accent-bright);
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transform: translateY(10px);
+          transition: opacity .35s var(--ease-out-expo), transform .35s var(--ease-out-expo);
+        }
+        .gallery-card:hover .gallery-arrow { opacity: 1; transform: translateY(0); }
         .gallery-title-bar {
-          padding: 16px 20px;
-          background: white;
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: 14px;
+          padding-top: 16px;
         }
         .gallery-title-bar h3 {
           margin: 0;
-          font-size: 1rem;
+          font-size: 1.12rem;
+          font-weight: 500;
           color: var(--text-dark);
         }
+        .gallery-open {
+          font-size: .76rem;
+          color: var(--text-light);
+          letter-spacing: .06em;
+          text-transform: uppercase;
+          transition: color .2s;
+        }
+        .gallery-card:hover .gallery-open { color: var(--primary-blue); }
         @media (max-width: 768px) {
+          .gallery-section { padding: 64px 0 80px; }
           .gallery-grid { grid-template-columns: 1fr; }
         }
       `}</style>

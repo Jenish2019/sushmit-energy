@@ -1,7 +1,7 @@
 import { Album } from '@/lib/api';
 import { list, create, fail } from '@/lib/api';
 
-const FIELDS = ['name', 'description', 'cover', 'images', 'order'];
+const FIELDS = ['name', 'slug', 'description', 'cover', 'images', 'order'];
 
 export async function GET() {
   return list(Album, {}, { order: 1, createdAt: -1 });

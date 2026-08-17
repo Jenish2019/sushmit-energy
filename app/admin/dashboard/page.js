@@ -15,7 +15,7 @@ const stats = [
 
 const quickLinks = [
   { href: '/admin/content/banners', label: 'Manage Banners', icon: Image, desc: 'Update homepage banners & hero sections' },
-  { href: '/admin/content/about', label: 'Edit About Page', icon: FileTextIcon, desc: 'Update company vision, mission & objectives' },
+  { href: '/admin/company/about', label: 'Edit About Page', icon: FileTextIcon, desc: 'Edit company profile & paragraphs' },
   { href: '/admin/content/services', label: 'Manage Services', icon: Globe, desc: 'Edit service offerings & descriptions' },
   { href: '/admin/projects', label: 'Manage Projects', icon: FolderOpen, desc: 'Update hydropower project details' },
   { href: '/admin/content/news', label: 'News & Updates', icon: Newspaper, desc: 'Post news articles & press releases' },

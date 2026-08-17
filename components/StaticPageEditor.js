@@ -99,6 +99,14 @@ export default function StaticPageEditor({ title, description, fields, previewUr
         </div>
       );
     }
+    if (f.type === 'file') {
+      return (
+        <div className="spe-image-row">
+          <input className="spe-input" value={data[f.key] || ''} onChange={e => update(f.key, e.target.value)} placeholder={f.placeholder} />
+          <UploadButton onUploaded={(url) => update(f.key, url)} accept={f.accept || '*/*'} label="Upload" maxSizeMB={f.maxSizeMB || 50} />
+        </div>
+      );
+    }
     if (f.type === 'richtext') {
       return (
         <RichTextEditor

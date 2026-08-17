@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Image, Globe, FolderOpen, Newspaper, NotePencil } from '@phosphor-icons/react/dist/ssr';
 
 const sections = [
-  { href: '/admin/content/about', label: 'About Us', icon: FileTextIcon, desc: 'Company profile, mission, vision & objectives', count: '1 page' },
+  { href: '/admin/company/about', label: 'About Us', icon: FileTextIcon, desc: 'Company profile', count: '1 page' },
   { href: '/admin/content/services', label: 'Services', icon: Globe, desc: 'Service offerings & descriptions', count: '0 items' },
   { href: '/admin/projects', label: 'Projects', icon: FolderOpen, desc: 'Hydropower project details & status', count: '3 items' },
   { href: '/admin/content/news', label: 'News & Press', icon: Newspaper, desc: 'Press releases, news articles & updates', count: '0 items' },

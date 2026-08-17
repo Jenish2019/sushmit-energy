@@ -1,7 +1,7 @@
 import { Report } from '@/lib/api';
 import { list, create, fail } from '@/lib/api';
 
-const FIELDS = ['title', 'type', 'fileUrl', 'date'];
+const FIELDS = ['title', 'type', 'fileUrl', 'date', 'description', 'size'];
 
 export async function GET() {
   return list(Report, {}, { date: -1 });

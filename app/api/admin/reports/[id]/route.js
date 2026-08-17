@@ -1,7 +1,7 @@
 import { Report } from '@/lib/api';
 import { detail, update, remove, fail } from '@/lib/api';
 
-const FIELDS = ['title', 'type', 'fileUrl', 'date'];
+const FIELDS = ['title', 'type', 'fileUrl', 'date', 'description', 'size'];
 
 export async function GET(_request, { params }) {
   const { id } = await params;

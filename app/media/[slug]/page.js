@@ -10,19 +10,12 @@ import { getNewsArticleBySlug, getRecentArticles } from '../../../lib/data';
 
 export const dynamic = 'force-dynamic';
 
-const listMap = {
-  'Press Release': { href: '/press-releases', label: 'Press Releases' },
-  News: { href: '/sushmit-news', label: 'Sushmit Energy in the News' },
-  Notice: { href: '/sushmit-news', label: 'Sushmit Energy in the News' },
-  Update: { href: '/sushmit-news', label: 'Sushmit Energy in the News' },
-};
+const backLink = { href: '/news', label: 'News' };
 
 const quickLinks = [
-  { href: '/press-releases', label: 'Press Releases' },
-  { href: '/sushmit-news', label: 'Sushmit Energy in the News' },
-  { href: '/media-kit', label: 'Media Kit' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/publications', label: 'Publications' },
+  { href: '/gallery', label: 'Gallery' },
+  { href: '/news', label: 'News' },
+  { href: '/resources', label: 'Resources' },
 ];
 
 export async function generateMetadata({ params }) {
@@ -41,7 +34,7 @@ export default async function ArticleDetailPage({ params }) {
   if (!article) notFound();
 
   const recent = await getRecentArticles(4);
-  const back = listMap[article.category] || { href: '/blog', label: 'Blog' };
+  const back = backLink;
   const isHtml = /<[a-z][\s\S]*>/i.test(article.content || '');
   const body = isHtml
     ? article.content

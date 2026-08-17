@@ -96,9 +96,6 @@ const seedData = {
       title: DEFAULTS.about.title,
       subtitle: DEFAULTS.about.subtitle,
       paragraphs: DEFAULTS.about.paragraphs,
-      vision: DEFAULTS.about.vision,
-      mission: DEFAULTS.about.mission,
-      objectives: DEFAULTS.about.objectives,
     },
     {
       slug: 'message-of-chairman',
@@ -112,12 +109,6 @@ const seedData = {
       paragraphs: DEFAULTS.chairman.paragraphs,
       quote: DEFAULTS.chairman.quote,
       signoff: DEFAULTS.chairman.signoff,
-    },
-    {
-      slug: 'organizational-chart',
-      title: DEFAULTS.orgChart.title,
-      subtitle: DEFAULTS.orgChart.subtitle,
-      image: DEFAULTS.orgChart.image,
     },
     {
       slug: 'investment-opportunity',
@@ -194,17 +185,6 @@ const seedData = {
     homepage: DEFAULTS.homepage,
   },
 
-  jobs: DEFAULTS.jobs.map((j) => ({
-    title: j.title,
-    department: j.department || '',
-    location: j.location || '',
-    type: j.type || 'Full-Time',
-    deadline: toIsoDate(j.deadline),
-    description: j.description || '',
-    requirements: j.requirements || [],
-    status: j.status || 'Open',
-  })),
-
   contact: {
     address: DEFAULTS.contact.address,
     phone: `${DEFAULTS.contact.phone}\n${DEFAULTS.contact.fax} (Fax)`,
@@ -223,7 +203,6 @@ const collections = [
   { name: 'mediaresources', docs: seedData.mediaResources },
   { name: 'reports', docs: seedData.reports },
   { name: 'settings', docs: [seedData.settings] },
-  { name: 'jobs', docs: seedData.jobs },
   { name: 'contact', docs: [seedData.contact] },
 ];
 
