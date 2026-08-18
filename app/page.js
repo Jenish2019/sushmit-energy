@@ -77,11 +77,6 @@ export default async function Home() {
           padding-block: clamp(48px, 9vh, 88px);
         }
 
-        @media (max-width: 900px) {
-          .snap-page > *,
-          .snap-hero { align-items: flex-start; }
-        }
-
         @media (prefers-reduced-motion: reduce) {
           html { scroll-behavior: auto; }
         }
