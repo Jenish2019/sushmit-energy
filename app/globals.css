@@ -58,8 +58,12 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-height) + 12px);
+  overflow-x: clip;
 }
 
+/* Clip off-canvas fixed panels (mobile drawer, menu sidebar) so they can never
+   create horizontal page overflow. `clip` is used instead of `hidden` so it
+   does NOT create a scroll container, which would break position: sticky. */
 body {
   font-family: var(--font-body), var(--font-display), sans-serif;
   color: var(--text-body);
@@ -68,6 +72,13 @@ body {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  html {
+    overflow-x: hidden;
+  }
 }
 
 h1, h2, h3, h4, h5, h6,

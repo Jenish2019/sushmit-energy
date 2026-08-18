@@ -11,9 +11,9 @@ const navItems = [
   {
     label: 'Company',
     children: [
+      { label: "Chairman's Message", href: '/message-of-chairman/' },
       { label: 'About Sushmit Energy', href: '/about-us/' },
       { label: 'Board of Directors', href: '/board-of-directors/' },
-      { label: "Chairman's Message", href: '/message-of-chairman/' },
     ],
   },
   { label: 'Our Project', href: '/projects/' },

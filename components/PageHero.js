@@ -71,7 +71,7 @@ export default function PageHero({ title, subtitle, backLink, image }) {
           background: radial-gradient(closest-side, rgba(10,77,163,.1), transparent);
           pointer-events: none;
         }
-        .page-hero-inner { position: relative; z-index: 2; max-width: 900px; }
+        .page-hero-inner { position: relative; z-index: 2; max-width: 900px; margin-left: 0; margin-right: auto; }
         .page-hero-bg {
           position: absolute;
           inset: 0;
