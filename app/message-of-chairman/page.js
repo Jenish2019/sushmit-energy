@@ -62,6 +62,8 @@ export default async function ChairmanMessagePage() {
           margin: 0 auto;
         }
         .chairman-page-img {
+          position: sticky;
+          top: 96px;
           border-radius: var(--radius-lg);
           overflow: hidden;
           box-shadow: var(--shadow-lg);

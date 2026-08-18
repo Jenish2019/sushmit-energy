@@ -152,17 +152,13 @@ export default function Header() {
             </nav>
 
             <div className="header-actions">
-              <a href="/contact-us/" className="header-contact-link">
-                Contact
-                <ArrowRight size={15} weight="bold" />
-              </a>
               <button
                 className="menu-toggle"
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label="Toggle menu"
                 aria-expanded={menuOpen}
               >
-                {menuOpen ? 'Close' : 'Menu'}
+                Menu
                 <span className={`menu-toggle-bars ${menuOpen ? 'open' : ''}`} aria-hidden="true">
                   <i />
                   <i />
@@ -181,44 +177,45 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Full-screen menu overlay */}
-      <div className={`menu-overlay ${menuOpen ? 'open' : ''}`} aria-hidden={!menuOpen}>
-        <div className="menu-overlay-inner container-wide">
-          <div className="menu-overlay-left">
-            <div className="menu-overlay-grid">
-              {navItems.map((item) => (
-                <div key={item.label} className={`menu-group ${openMobileSub[item.label] ? 'expanded' : ''}`}>
-                  {item.children ? (
-                    <>
-                      <button className="menu-group-title" onClick={() => toggleMobileSub(item.label)}>
-                        {item.label}
-                        <ArrowRight size={16} weight="bold" className="menu-group-arrow" />
-                      </button>
-                      <ul className="menu-group-sub">
-                        {item.children.map((child) => (
-                          <li key={child.href}>
-                            <Link href={child.href} onClick={() => setMenuOpen(false)} className={isActive(child.href) ? 'active' : ''}>
-                              {child.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  ) : (
-                    <Link href={item.href} onClick={() => setMenuOpen(false)} className={`menu-group-title ${isActive(item.href) ? 'active' : ''}`}>
+      {/* Menu sidebar */}
+      <div className={`menu-backdrop ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(false)} aria-hidden="true" />
+      <aside className={`menu-overlay ${menuOpen ? 'open' : ''}`} aria-hidden={!menuOpen}>
+        <div className="menu-overlay-header">
+          <img src="/images/logo.png" alt={site.siteName} className="menu-overlay-logo" />
+          <button className="menu-overlay-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+            <X size={24} weight="bold" />
+          </button>
+        </div>
+        <div className="menu-overlay-body">
+          <div className="menu-overlay-grid">
+            {navItems.map((item) => (
+              <div key={item.label} className={`menu-group ${openMobileSub[item.label] ? 'expanded' : ''}`}>
+                {item.children ? (
+                  <>
+                    <button className="menu-group-title" onClick={() => toggleMobileSub(item.label)}>
                       {item.label}
                       <ArrowRight size={16} weight="bold" className="menu-group-arrow" />
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="menu-overlay-contact">
-              <span>{site.sitePhone}</span>
-              <span>{site.siteEmail}</span>
-            </div>
+                    </button>
+                    <ul className="menu-group-sub">
+                      {item.children.map((child) => (
+                        <li key={child.href}>
+                          <Link href={child.href} onClick={() => setMenuOpen(false)} className={isActive(child.href) ? 'active' : ''}>
+                            {child.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <Link href={item.href} onClick={() => setMenuOpen(false)} className={`menu-group-title ${isActive(item.href) ? 'active' : ''}`}>
+                    {item.label}
+                    <ArrowRight size={16} weight="bold" className="menu-group-arrow" />
+                  </Link>
+                )}
+              </div>
+            ))}
           </div>
-          <div className="menu-overlay-right">
+          <div className="menu-overlay-cards">
             {menuCards.filter((c) => c.img).map((card, i) => (
               <Link key={i} href={card.href} className="menu-card" onClick={() => setMenuOpen(false)}>
                 <div className="menu-card-media">
@@ -231,8 +228,12 @@ export default function Header() {
               </Link>
             ))}
           </div>
+          <div className="menu-overlay-contact">
+            <span>{site.sitePhone}</span>
+            <span>{site.siteEmail}</span>
+          </div>
         </div>
-      </div>
+      </aside>
 
       {/* Mobile drawer */}
       <div className={`drawer-overlay ${drawerOpen ? 'open' : ''}`} onClick={() => setDrawerOpen(false)} aria-hidden="true" />
@@ -415,34 +416,6 @@ export default function Header() {
         .dropdown li a.active { background: var(--bg-light); color: var(--primary-blue); }
 
         .header-actions { display: flex; align-items: center; gap: 20px; }
-        .header-contact-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          font-family: var(--font-display), sans-serif;
-          font-size: .86rem;
-          font-weight: 600;
-          letter-spacing: .06em;
-          text-transform: uppercase;
-          color: var(--text-dark);
-          padding: 8px 0;
-          position: relative;
-          transition: color .2s;
-        }
-        .header-contact-link::after {
-          content: '';
-          position: absolute;
-          left: 0; right: 0; bottom: 2px;
-          height: 1px;
-          background: var(--text-dark);
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform .28s var(--ease-out-expo);
-        }
-        .header-contact-link:hover { color: var(--primary-blue); }
-        .header-contact-link:hover::after { transform: scaleX(1); }
-        .header-contact-link svg { transition: transform .25s var(--ease-out-expo); }
-        .header-contact-link:hover svg { transform: translateX(4px); }
 
         /* Menu button (IEA style) */
         .menu-toggle {
@@ -483,36 +456,66 @@ export default function Header() {
         .burger { display: flex; flex-direction: column; gap: 5px; width: 24px; }
         .burger i { height: 2px; background: currentColor; border-radius: 2px; }
 
-        /* ---------- Full-screen menu overlay ---------- */
-        .menu-overlay {
+        /* ---------- Menu sidebar ---------- */
+        .menu-backdrop {
           position: fixed;
           inset: 0;
-          z-index: 1500;
-          background: var(--bg-white);
-          overflow-y: auto;
+          background: rgba(16, 20, 26, .5);
+          backdrop-filter: blur(3px);
+          -webkit-backdrop-filter: blur(3px);
           opacity: 0;
           visibility: hidden;
-          transition: opacity .38s var(--ease-out-expo), visibility .38s;
+          transition: opacity .3s ease, visibility .3s;
+          z-index: 1490;
         }
-        .menu-overlay.open { opacity: 1; visibility: visible; }
-        .menu-overlay-inner {
-          display: grid;
-          grid-template-columns: 1.1fr 1fr;
-          gap: 60px;
-          min-height: 100%;
-          padding-top: 120px;
-          padding-bottom: 60px;
-          align-items: start;
+        .menu-backdrop.open { opacity: 1; visibility: visible; }
+        .menu-overlay {
+          position: fixed;
+          top: 0;
+          right: 0;
+          height: 100vh;
+          width: min(480px, 100vw);
+          background: var(--bg-white);
+          z-index: 1500;
+          transform: translateX(100%);
+          visibility: hidden;
+          transition: transform .38s var(--ease-out-expo), visibility .38s;
+          display: flex;
+          flex-direction: column;
+          box-shadow: -20px 0 50px rgba(16,20,26,.2);
+          overflow: hidden;
         }
-        .menu-overlay-left {
-          border-top: 1px solid var(--border-color);
-          padding-top: 40px;
+        .menu-overlay.open { transform: translateX(0); visibility: visible; }
+        .menu-overlay-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 18px 20px;
+          border-bottom: 1px solid var(--border-color);
+        }
+        .menu-overlay-logo { height: 40px; width: auto; }
+        .menu-overlay-close {
+          background: var(--bg-light);
+          border: none;
+          cursor: pointer;
+          width: 40px; height: 40px;
+          border-radius: var(--radius-md);
+          display: flex; align-items: center; justify-content: center;
+          color: var(--text-dark);
+          transition: background .2s;
+        }
+        .menu-overlay-close:hover { background: var(--border-color); }
+        .menu-overlay-body {
+          flex: 1;
+          overflow-y: auto;
+          padding: 24px 20px 28px;
         }
         .menu-overlay-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 28px 44px;
+          grid-template-columns: 1fr;
+          gap: 4px;
         }
+        .menu-group { border-bottom: 1px solid var(--border-soft); }
         .menu-group-title {
           display: flex;
           align-items: center;
@@ -523,10 +526,10 @@ export default function Header() {
           cursor: pointer;
           text-align: left;
           font-family: var(--font-display), sans-serif;
-          font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+          font-size: 1.15rem;
           font-weight: 500;
           color: var(--text-dark);
-          padding: 4px 0;
+          padding: 14px 4px;
           width: 100%;
           position: relative;
           transition: color .2s;
@@ -544,36 +547,39 @@ export default function Header() {
           transition: max-height .4s var(--ease-out-expo), margin .4s var(--ease-out-expo);
           margin: 0;
         }
-        .menu-group.expanded .menu-group-sub { max-height: 400px; margin-top: 10px; }
+        .menu-group.expanded .menu-group-sub { max-height: 400px; margin-top: 2px; }
         .menu-group-sub a {
           display: block;
-          padding: 7px 0;
+          padding: 9px 4px;
           color: var(--text-muted);
-          font-size: .95rem;
+          font-size: .92rem;
           border-bottom: 1px dashed var(--border-soft);
           transition: color .2s, padding-left .2s;
         }
+        .menu-group-sub a:last-child { border-bottom: none; }
         .menu-group-sub a:hover,
-        .menu-group-sub a.active { color: var(--primary-blue); padding-left: 6px; }
+        .menu-group-sub a.active { color: var(--primary-blue); padding-left: 10px; }
+        .menu-overlay-cards {
+          display: grid;
+          gap: 14px;
+          margin-top: 28px;
+        }
         .menu-overlay-contact {
           display: flex;
-          gap: 24px;
-          margin-top: 56px;
+          flex-direction: column;
+          gap: 8px;
+          margin-top: 28px;
           padding-top: 20px;
           border-top: 1px solid var(--border-color);
           font-size: .84rem;
           color: var(--text-muted);
           letter-spacing: .03em;
         }
-        .menu-overlay-right {
-          display: grid;
-          gap: 16px;
-        }
         .menu-card {
           display: grid;
-          grid-template-columns: 120px 1fr;
+          grid-template-columns: 100px 1fr;
           align-items: center;
-          gap: 20px;
+          gap: 16px;
           background: var(--bg-light);
           border: 1px solid var(--border-color);
           border-radius: var(--radius-md);
@@ -582,10 +588,10 @@ export default function Header() {
           transition: transform .3s var(--ease-out-expo), box-shadow .3s, border-color .3s;
         }
         .menu-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--line-strong, #d9d9d4); }
-        .menu-card-media { position: relative; height: 96px; overflow: hidden; }
+        .menu-card-media { position: relative; height: 84px; overflow: hidden; }
         .menu-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s var(--ease-out-expo); }
         .menu-card:hover .menu-card-media img { transform: scale(1.08); }
-        .menu-card-info { padding-right: 18px; }
+        .menu-card-info { padding-right: 16px; }
         .menu-card-text {
           display: block;
           font-size: .76rem;
@@ -594,7 +600,7 @@ export default function Header() {
         }
         .menu-card-title {
           font-family: var(--font-display), sans-serif;
-          font-size: 1.05rem;
+          font-size: 1rem;
           font-weight: 600;
           color: var(--text-dark);
         }
@@ -705,17 +711,7 @@ export default function Header() {
         @media (max-width: 1100px) {
           .desktop-nav { display: none; }
           .menu-toggle { display: none; }
-          .header-contact-link { display: none; }
           .mobile-toggle { display: flex; }
-        }
-        @media (max-width: 900px) {
-          .menu-overlay-inner { grid-template-columns: 1fr; padding-top: 110px; }
-          .menu-overlay-right { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 560px) {
-          .menu-overlay-grid { grid-template-columns: 1fr; gap: 20px; }
-          .menu-overlay-right { grid-template-columns: 1fr; }
-          .menu-overlay-contact { flex-direction: column; gap: 8px; }
         }
       `}</style>
     </>

@@ -120,7 +120,7 @@ export default function Footer() {
           <p className="copyright">
             © {new Date().getFullYear()} Sushmit Energy. All rights reserved.
           </p>
-          <span className="footer-status">Hydropower Developer · Nepal</span>
+          <span className="footer-status">Clock b Business Technology</span>
           <button className="back-to-top" onClick={scrollTop} aria-label="Back to top">
             <ArrowUp size={18} weight="bold" />
           </button>

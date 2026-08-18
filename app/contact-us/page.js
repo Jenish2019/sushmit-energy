@@ -83,7 +83,7 @@ export default function ContactPage() {
               </div>
 
               <div className="contact-form-wrapper">
-                <h2>PaperPlaneTilt Us a Message</h2>
+                <h2>Send Us a Message</h2>
                 {submitted ? (
                   <div className="success-message">
                     <h3>Thank You!</h3>
@@ -141,7 +141,7 @@ export default function ContactPage() {
                       />
                     </div>
                     <button type="submit" className="btn btn-primary" disabled={submitting}>
-                      {submitting ? 'Sending...' : 'PaperPlaneTilt Message'} <PaperPlaneTilt size={18} />
+                      {submitting ? 'Sending...' : 'Send Message'} <PaperPlaneTilt size={18} />
                     </button>
                     {error && <div className="form-error">{error}</div>}
                   </form>

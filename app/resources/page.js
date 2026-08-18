@@ -33,13 +33,6 @@ export default async function ResourcesPage() {
 
         <section className="resources-section">
           <div className="container">
-            <Reveal>
-              <p className="resources-intro">
-                Welcome to the Sushmit Energy resources centre. Download company materials, reports, and publications.
-                For additional inquiries, please contact us at <a href="mailto:info@sushmitenergy.com" className="email-link">info@sushmitenergy.com</a>.
-              </p>
-            </Reveal>
-
             {[0, 1].map((idx) => {
               const group = idx === 0 ? kit : pubs;
               const section = sections[idx];
@@ -89,16 +82,6 @@ export default async function ResourcesPage() {
 
       <style>{`
         .resources-section { padding: 90px 0 120px; background: var(--bg-white); }
-        .resources-intro {
-          max-width: 680px;
-          margin: 0 auto 72px;
-          text-align: center;
-          color: var(--text-muted);
-          font-size: 1.02rem;
-          line-height: 1.8;
-        }
-        .email-link { color: var(--primary-blue); border-bottom: 1px solid rgba(10,77,163,.4); transition: border-color .2s; }
-        .email-link:hover { border-color: var(--primary-blue); }
 
         .resources-block { margin-bottom: 72px; }
         .resources-block:last-child { margin-bottom: 0; }
@@ -180,7 +163,6 @@ export default async function ResourcesPage() {
 
         @media (max-width: 768px) {
           .resources-section { padding: 64px 0 80px; }
-          .resources-intro { margin-bottom: 48px; }
           .resources-head { flex-direction: column; gap: 8px; }
           .resource-row { grid-template-columns: 44px 1fr; }
           .resource-download { grid-column: 2; justify-self: start; }
