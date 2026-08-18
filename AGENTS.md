@@ -22,8 +22,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `/about-us/` - Company vision/mission/objectives
 - `/board-of-directors/` - 5 board members (with social links)
 - `/message-of-chairman/` - Chairman's message
-- `/our-management-team/` - 6 team members
-- `/investment-oppourtunity/` - Investment info
 - `/projects/` - Main project (Kunaban) hero page: facts sidebar (River/Type + editable `specs` grid), overview rich text, features, image band, CTA
 - `/gallery/` - Album cards (cover image, falls back to first photo); links to detail pages
 - `/gallery/[slug]/` - Album detail: cover as PageHero background + first photo in grid, keyboard-navigable lightbox (`components/AlbumLightbox.js`); 404 if slug not found
@@ -36,13 +34,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `/login/` - Admin login page (real auth, redirects to /admin/dashboard)
 
 ## Public site is DB-driven (frontend wired to MongoDB)
-- Public pages are async server components with `export const dynamic = 'force-dynamic'` reading MongoDB via `lib/data.js` (`getSettings`, `getBannerSlides`, `getHomepage`, `getContact`, `getProjects`, `getProjectBySlug`, `getMainProject`, `getBoardMembers`, `getManagementMembers`, `getNews(category)`, `getBlogPosts`, `getNewsArticleBySlug(slug)`, `getRecentArticles(limit)`, `getAllArticles`, `getAlbums`, `getAlbumBySlug(slug)`, `getMediaResources(group)`, `getReports`, `getPage(slug)`)
+- Public pages are async server components with `export const dynamic = 'force-dynamic'` reading MongoDB via `lib/data.js` (`getSettings`, `getBannerSlides`, `getHomepage`, `getContact`, `getProjects`, `getProjectBySlug`, `getMainProject`, `getBoardMembers`, `getNews(category)`, `getBlogPosts`, `getNewsArticleBySlug(slug)`, `getRecentArticles(limit)`, `getAllArticles`, `getAlbums`, `getAlbumBySlug(slug)`, `getMediaResources(group)`, `getReports`, `getPage(slug)`)
 - DB-first with fallback to real site content in `lib/defaults.js` (used only when a collection is empty)
 - Client components (Header/Footer/Contact/PageHero) fetch `/api/public/settings` (force-dynamic) for settings + contact; PageHero accepts an `image` prop override for per-page header backgrounds
 - `components/Pagination.js` renders 10-per-page pagination wired into admin News/Resources/Messages tables
 
 ## Admin Panel (/admin)
-- Dashboard, Homepage, Company (About/Board/Chairman/Management/Investment), Projects (editable `specs` rows), Media (News/Resources), Gallery (multi-image upload, slug auto-gen), Messages (paginated read/unread/delete), Contact Us, Policy, Reports, Settings (Media tab: pageHeroImage upload)
+- Dashboard, Homepage, Company (About/Board/Chairman), Projects (editable `specs` rows), Media (News/Resources), Gallery (multi-image upload, slug auto-gen), Messages (paginated read/unread/delete), Contact Us, Policy, Reports, Settings (Media tab: pageHeroImage upload)
 - All admin pages wired to MongoDB via /api/admin/* routes (real CRUD, no more local state mocks)
 - Admin auth: POST /api/admin/auth/register (first admin only), /login, /logout, /me. Session = httpOnly JWT cookie `admin_session` (7 days)
 - Access control: `proxy.js` (Next.js 16 middleware) protects all `/admin` pages (redirect -> /login) and `/api/admin/*` routes (401) except auth endpoints; `/login` redirects to /admin if already authed. Admin layout also checks `/me` client-side and wires the logout button.
@@ -52,7 +50,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - DB: sushmit_energy (Atlas cluster0.zsxcvne.mongodb.net)
 - Env: `.env.local` (gitignored) -> MONGODB_URI, MONGODB_DB. Copy `.env.example`
 - Helper: `lib/mongodb.js` (cached mongoose connection), `lib/api.js` (CRUD helpers), `lib/auth.js` (session/JWT)
-- Models (`lib/models/`): Admin, Page (strict:false for arbitrary page fields), BoardMember, ManagementMember, Project (has `specs` array), NewsArticle, Album (slug + images: Mixed), MediaResource (group: media-kit|publications), Report (description/size), Contact, Setting (has pageHeroImage + bannerSlides), Message, Service
+- Models (`lib/models/`): Admin, Page (strict:false for arbitrary page fields), BoardMember, Project (has `specs` array), NewsArticle, Album (slug + images: Mixed), MediaResource (group: media-kit|publications), Report (description/size), Contact, Setting (has pageHeroImage + bannerSlides), Message, Service
 - API routes (`app/api/`): admin CRUD for every model under /api/admin/*, plus public /api/contact and /api/public/settings
 - Seed: `npm run seed` -> scripts/seed.js (real site content from lib/defaults.js; add `--force` to wipe+reseed a collection)
 - MinIO uploads: `/api/admin/upload` (`components/UploadButton.js`, image 2 MB / other 50 MB caps) — MinIO integration present; verify credentials

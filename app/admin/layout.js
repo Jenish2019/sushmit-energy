@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  SquaresFour, FileText, Users, ChatCircle, Briefcase,
-  TrendUp, FolderOpen, Newspaper, Globe, Package,
+  SquaresFour, FileText, Users, ChatCircle,
+  FolderOpen, Newspaper, Globe, Package,
   Image, Envelope, ShieldCheck, ChartBar, Gear, SignOut, List, X,
   CaretDown, Buildings, HouseSimple
 } from '@phosphor-icons/react/dist/ssr';
@@ -19,8 +19,6 @@ const navItems = [
       { href: '/admin/company/about', label: 'About Us', icon: FileText },
       { href: '/admin/company/board', label: 'Board of Directors', icon: Users },
       { href: '/admin/company/chairman', label: "Chairman's Message", icon: ChatCircle },
-      { href: '/admin/company/management', label: 'Management Team', icon: Briefcase },
-      { href: '/admin/company/investment', label: 'Investment Opportunity', icon: TrendUp },
     ],
   },
   { href: '/admin/projects', label: 'Projects', icon: FolderOpen },

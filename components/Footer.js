@@ -74,7 +74,6 @@ export default function Footer() {
             <ul className="link-list">
               <li><Link href="/about-us/">About Us</Link></li>
               <li><Link href="/board-of-directors/">Board of Directors</Link></li>
-              <li><Link href="/our-management-team/">Management Team</Link></li>
               <li><Link href="/projects/">Our Project</Link></li>
             </ul>
           </div>

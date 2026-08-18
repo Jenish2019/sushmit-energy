@@ -65,14 +65,6 @@ const seedData = {
     order: m.order || 99,
   })),
 
-  managementMembers: DEFAULTS.managementTeam.map((m) => ({
-    name: m.name,
-    title: m.title || '',
-    image: m.image || '',
-    description: m.description || '',
-    order: m.order || 99,
-  })),
-
   news: [
     ...Object.entries(DEFAULTS.news).flatMap(([category, items]) =>
       items.map((n) => ({
@@ -109,15 +101,6 @@ const seedData = {
       paragraphs: DEFAULTS.chairman.paragraphs,
       quote: DEFAULTS.chairman.quote,
       signoff: DEFAULTS.chairman.signoff,
-    },
-    {
-      slug: 'investment-opportunity',
-      title: DEFAULTS.investment.title,
-      subtitle: DEFAULTS.investment.subtitle,
-      heading: DEFAULTS.investment.heading,
-      paragraphs: DEFAULTS.investment.paragraphs,
-      links: DEFAULTS.investment.links,
-      resources: DEFAULTS.investment.resources,
     },
     {
       slug: 'policy',
@@ -196,7 +179,6 @@ const seedData = {
 const collections = [
   { name: 'projects', docs: seedData.projects },
   { name: 'boardmembers', docs: seedData.boardMembers },
-  { name: 'managementmembers', docs: seedData.managementMembers },
   { name: 'newsarticles', docs: seedData.news },
   { name: 'pages', docs: seedData.pages },
   { name: 'albums', docs: seedData.albums },

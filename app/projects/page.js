@@ -123,8 +123,7 @@ export default async function ProjectsPage() {
                 <h2>Be part of Nepal&rsquo;s clean energy future</h2>
                 <p>Explore the investment opportunity behind the Kunaban Khola Hydropower Project.</p>
                 <div className="pk-cta-actions">
-                  <a href="/investment-oppourtunity/" className="pk-btn pk-btn--fill">Investment opportunity</a>
-                  <a href="/contact-us/" className="pk-btn pk-btn--outline-dark">Talk to our team</a>
+                  <a href="/contact-us/" className="pk-btn pk-btn--fill">Talk to our team</a>
                 </div>
               </div>
             </Reveal>
