@@ -447,6 +447,18 @@ img {
 }
 
 @media (max-width: 768px) {
+  .reveal,
+  .reveal.reveal-left,
+  .reveal.reveal-right,
+  .reveal.reveal-scale,
+  .reveal-mask,
+  .reveal-line {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+  .reveal-line > * { transform: scaleX(1); }
+
   .section-padding {
     padding: 72px 0;
   }
